@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             radio.checked = true;
           }
         });
-        saveFormDraft();
+        savePathwaySelection();
       }
 
       if (scrollToId) {
@@ -419,165 +419,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
-  // 7. PAGE 5, SECTION 5.2: WALKTHROUGH FORM VALIDATION & DRAFT PERSISTENCE
+  // 7. PAGE 5, SECTION 5.2: WHATSAPP CURRICULUM WALKTHROUGH LINK SYNC
   // ==========================================================================
-  const DRAFT_STORAGE_KEY = 'halogiq_walkthrough_draft_v2';
-  const walkthroughForm = document.getElementById('walkthroughForm');
-  const formErrorMsg = document.getElementById('formErrorMsg');
-  const formConfirmation = document.getElementById('formConfirmation');
-  const confirmationSummary = document.getElementById('confirmationSummary');
-  const resetFormBtn = document.getElementById('resetFormBtn');
+  const WHATSAPP_NUMBER = '919481369078';
+  const whatsappWalkthroughBtn = document.getElementById('whatsappWalkthroughBtn');
+  const whatsappNumberDisplay = document.querySelector('.whatsapp-number-display');
 
-  const requiredFieldConfigs = [
-    { id: 'fullName', errId: 'err-fullName' },
-    { id: 'userRole', errId: 'err-userRole' },
-    { id: 'institutionCity', errId: 'err-institutionCity' },
-    { id: 'contactInfo', errId: 'err-contactInfo' }
-  ];
+  function updateWhatsAppWalkthroughLink() {
+    const selectedPathway = document.querySelector('input[name="pathway"]:checked');
+    const pathwayVal = selectedPathway ? selectedPathway.value : 'HALOGIQ Elevate [Full Campus + Studio]';
+    const message = `Hello HALOGIQ Team, we would like to request a Curriculum Walkthrough for ${pathwayVal}.`;
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
-  function saveFormDraft() {
-    if (!walkthroughForm) return;
-    try {
-      const selectedPathway = document.querySelector('input[name="pathway"]:checked');
-      const draft = {
-        fullName: document.getElementById('fullName')?.value || '',
-        userRole: document.getElementById('userRole')?.value || '',
-        institutionCity: document.getElementById('institutionCity')?.value || '',
-        contactInfo: document.getElementById('contactInfo')?.value || '',
-        pathway: selectedPathway ? selectedPathway.value : '',
-        assistanceNotes: document.getElementById('assistanceNotes')?.value || ''
-      };
-      sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
-    } catch (_) {
-      // Ignore storage quota or private mode restrictions
+    if (whatsappWalkthroughBtn) {
+      whatsappWalkthroughBtn.setAttribute('href', waUrl);
+    }
+    if (whatsappNumberDisplay) {
+      whatsappNumberDisplay.setAttribute('href', waUrl);
     }
   }
 
-  function restoreFormDraft() {
-    if (!walkthroughForm) return;
-    try {
-      const raw = sessionStorage.getItem(DRAFT_STORAGE_KEY);
-      if (!raw) return;
-      const draft = JSON.parse(raw);
-      if (draft.fullName) document.getElementById('fullName').value = draft.fullName;
-      if (draft.userRole) document.getElementById('userRole').value = draft.userRole;
-      if (draft.institutionCity) document.getElementById('institutionCity').value = draft.institutionCity;
-      if (draft.contactInfo) document.getElementById('contactInfo').value = draft.contactInfo;
-      if (draft.assistanceNotes) document.getElementById('assistanceNotes').value = draft.assistanceNotes;
-      if (draft.pathway) {
-        const radios = document.querySelectorAll('input[name="pathway"]');
-        radios.forEach((r) => {
-          if (r.value === draft.pathway) r.checked = true;
-        });
-      }
-    } catch (_) {
-      // Ignore malformed draft
-    }
+  function savePathwaySelection() {
+    updateWhatsAppWalkthroughLink();
   }
 
-  function setFieldValidity(inputEl, errEl, isValid) {
-    if (!inputEl) return;
-    inputEl.classList.toggle('is-invalid', !isValid);
-    inputEl.setAttribute('aria-invalid', String(!isValid));
-    if (errEl) {
-      errEl.classList.toggle('visible', !isValid);
-    }
-  }
+  document.querySelectorAll('input[name="pathway"]').forEach((radio) => {
+    radio.addEventListener('change', updateWhatsAppWalkthroughLink);
+  });
 
-  restoreFormDraft();
-
-  if (walkthroughForm) {
-    // Live clear field error & persist draft on input/change
-    requiredFieldConfigs.forEach(({ id, errId }) => {
-      const inputEl = document.getElementById(id);
-      const errEl = document.getElementById(errId);
-      if (!inputEl) return;
-
-      const handleUpdate = () => {
-        if (inputEl.value.trim()) {
-          setFieldValidity(inputEl, errEl, true);
-        }
-        saveFormDraft();
-      };
-
-      inputEl.addEventListener('input', handleUpdate);
-      inputEl.addEventListener('change', handleUpdate);
-    });
-
-    const assistanceNotesEl = document.getElementById('assistanceNotes');
-    if (assistanceNotesEl) {
-      assistanceNotesEl.addEventListener('input', saveFormDraft);
-    }
-
-    document.querySelectorAll('input[name="pathway"]').forEach((radio) => {
-      radio.addEventListener('change', saveFormDraft);
-    });
-
-    walkthroughForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      let firstInvalidEl = null;
-
-      requiredFieldConfigs.forEach(({ id, errId }) => {
-        const inputEl = document.getElementById(id);
-        const errEl = document.getElementById(errId);
-        const val = inputEl ? inputEl.value.trim() : '';
-        const isValid = val.length > 0;
-        setFieldValidity(inputEl, errEl, isValid);
-        if (!isValid && !firstInvalidEl) {
-          firstInvalidEl = inputEl;
-        }
-      });
-
-      if (firstInvalidEl) {
-        if (formErrorMsg) {
-          formErrorMsg.classList.add('visible');
-        }
-        firstInvalidEl.focus();
-        return;
-      }
-
-      if (formErrorMsg) {
-        formErrorMsg.classList.remove('visible');
-      }
-
-      const fullName = document.getElementById('fullName').value.trim();
-      const userRole = document.getElementById('userRole').value.trim();
-      const institutionCity = document.getElementById('institutionCity').value.trim();
-      const contactInfo = document.getElementById('contactInfo').value.trim();
-      const selectedPathway = document.querySelector('input[name="pathway"]:checked');
-      const pathwayVal = selectedPathway ? selectedPathway.value : 'HALOGIQ Elevate';
-
-      if (confirmationSummary) {
-        confirmationSummary.textContent = `We have received your request for ${institutionCity} (${userRole}: ${fullName}) regarding ${pathwayVal}. Our Academic Partnerships Team will connect with you via ${contactInfo} within 24 hours.`;
-      }
-
-      try {
-        sessionStorage.removeItem(DRAFT_STORAGE_KEY);
-      } catch (_) {}
-
-      walkthroughForm.style.display = 'none';
-      if (formConfirmation) {
-        formConfirmation.classList.add('visible');
-      }
-      if (resetFormBtn) {
-        resetFormBtn.focus();
-      }
-    });
-  }
-
-  if (resetFormBtn && walkthroughForm && formConfirmation) {
-    resetFormBtn.addEventListener('click', () => {
-      walkthroughForm.reset();
-      requiredFieldConfigs.forEach(({ id, errId }) => {
-        setFieldValidity(document.getElementById(id), document.getElementById(errId), true);
-      });
-      if (formErrorMsg) {
-        formErrorMsg.classList.remove('visible');
-      }
-      formConfirmation.classList.remove('visible');
-      walkthroughForm.style.display = 'block';
-      document.getElementById('fullName')?.focus();
-    });
-  }
+  updateWhatsAppWalkthroughLink();
 });
