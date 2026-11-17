@@ -491,8 +491,10 @@ svg {
 
 .halogiq-wordmark {
   width: 154px;
-  height: 22px;
+  height: auto;
+  max-width: 100%;
   display: block;
+  object-fit: contain;
 }
 
 .brand-sublabel {
@@ -2535,7 +2537,7 @@ svg {
   }
   .halogiq-wordmark {
     width: 128px;
-    height: 18px;
+    height: auto;
   }
   .container {
     padding: 0 14px;
