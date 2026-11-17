@@ -8,7 +8,7 @@
   <meta property="og:title" content="HALOGIQ — Schools Teach Students What to Learn. We Teach Them How to Learn, Think, and Communicate." />
   <meta property="og:description" content="On-site Foundational Learning, In-Campus Executive Studio, and Scientific Board-Exam Readiness (Ages 8 to 19 | Grades 3 to 12 &amp; College), backed by the THC-Institute R&amp;D Wing." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.halogiq.in" />
+  <meta property="og:url" content="https://www.halogiq.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" />
@@ -1733,51 +1733,14 @@
             </div>
           </div>
 
-          <!-- Section 5.2: Right Column Request a Curriculum Walkthrough Form -->
+          <!-- Section 5.2: Right Column Request a Curriculum Walkthrough via WhatsApp -->
           <div class="partner-form-card">
-            <h2 class="form-card-title">Request Our Institutional Blueprint or Campus Visit</h2>
+            <h2 class="form-card-title">Request a Curriculum Walkthrough on WhatsApp</h2>
             <p class="form-card-subtitle">
-              Share a few basic details below, and our academic partnerships team will connect with you within 24 hours.
+              Connect directly with our academic partnerships team on WhatsApp to request our institutional blueprint, campus visit, or 12-minute classroom preview.
             </p>
 
-            <form id="walkthroughForm" novalidate>
-              <!-- Field 1 -->
-              <div class="form-group">
-                <label class="form-label" for="fullName">Your Full Name *</label>
-                <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g., Dr. Kavita Rao" aria-describedby="err-fullName" required />
-                <span id="err-fullName" class="field-error-msg">Please enter your full name.</span>
-              </div>
-
-              <!-- Field 2 -->
-              <div class="form-group">
-                <label class="form-label" for="userRole">Your Role *</label>
-                <select id="userRole" name="userRole" class="form-control" aria-describedby="err-userRole" required>
-                  <option value="">Select your role...</option>
-                  <option value="Principal">Principal</option>
-                  <option value="School Trustee or Correspondent">School Trustee or Correspondent</option>
-                  <option value="Academic Coordinator">Academic Coordinator</option>
-                  <option value="Teacher">Teacher</option>
-                  <option value="College Administrator">College Administrator</option>
-                  <option value="Parent">Parent</option>
-                </select>
-                <span id="err-userRole" class="field-error-msg">Please select your institutional role.</span>
-              </div>
-
-              <!-- Field 3 -->
-              <div class="form-group">
-                <label class="form-label" for="institutionCity">Institution Name &amp; City *</label>
-                <input type="text" id="institutionCity" name="institutionCity" class="form-control" placeholder="e.g., St. Xavier's High School, Bengaluru" aria-describedby="err-institutionCity" required />
-                <span id="err-institutionCity" class="field-error-msg">Please enter your institution name and city.</span>
-              </div>
-
-              <!-- Field 4 -->
-              <div class="form-group">
-                <label class="form-label" for="contactInfo">Direct Phone / WhatsApp Number &amp; Email Address *</label>
-                <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="e.g., +91 98765 43210 | principal@school.edu.in" aria-describedby="err-contactInfo" required />
-                <span id="err-contactInfo" class="field-error-msg">Please provide a valid phone/WhatsApp number or email address.</span>
-              </div>
-
-              <!-- Field 5 -->
+            <div class="whatsapp-walkthrough-panel">
               <div class="form-group">
                 <span class="form-label" id="pathwayGroupLabel">Partnership Pathway of Interest</span>
                 <div class="radio-group" role="radiogroup" aria-labelledby="pathwayGroupLabel">
@@ -1796,40 +1759,28 @@
                 </div>
               </div>
 
-              <!-- Field 6 -->
-              <div class="form-group">
-                <label class="form-label" for="assistanceNotes">How Can We Best Assist You? (Optional)</label>
-                <textarea id="assistanceNotes" name="assistanceNotes" rows="3" class="form-control" placeholder="e.g., &quot;Share the curriculum brochure,&quot; &quot;Schedule a campus meeting,&quot; or &quot;Request the 12-minute classroom preview&quot;"></textarea>
+              <div class="whatsapp-connect-box">
+                <span class="whatsapp-box-label">Official Partnerships WhatsApp</span>
+                <a href="https://wa.me/919481369078?text=Hello%20HALOGIQ%20Team%2C%20we%20would%20like%20to%20request%20a%20Curriculum%20Walkthrough%20for%20HALOGIQ%20Elevate%20%5BFull%20Campus%20%2B%20Studio%5D." target="_blank" rel="noopener noreferrer" class="whatsapp-number-display">+91 94813 69078</a>
               </div>
 
-              <p id="formErrorMsg" class="form-error-banner" role="alert">
-                Please complete all required (*) fields highlighted above so our academic team can reach you.
-              </p>
-
-              <button type="submit" class="btn btn-primary btn-block">
-                Request Curriculum Walkthrough
-              </button>
+              <a href="https://wa.me/919481369078?text=Hello%20HALOGIQ%20Team%2C%20we%20would%20like%20to%20request%20a%20Curriculum%20Walkthrough%20for%20HALOGIQ%20Elevate%20%5BFull%20Campus%20%2B%20Studio%5D." target="_blank" rel="noopener noreferrer" id="whatsappWalkthroughBtn" class="btn btn-primary btn-block whatsapp-cta-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.82 14.07c-.24.68-1.41 1.3-1.95 1.38-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.61-2.91-1.26-4.81-4.2-4.96-4.4-.15-.2-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.59-.36.79-.36h.57c.18 0 .43-.07.67.51.24.59.83 2.02.9 2.17.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.61.18.3.78 1.29 1.68 2.09 1.15 1.03 2.12 1.35 2.42 1.5.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.27.1 1.73.82 2.03.97.3.15.5.22.57.34.08.12.08.7-.16 1.38z"/>
+                </svg>
+                <span>Request Curriculum Walkthrough on WhatsApp</span>
+              </a>
 
               <p class="privacy-note">
-                Your information is kept strictly confidential. We respect educators' schedules and never send automated spam messages.
+                Your inquiry goes directly to our academic leadership team. We respect educators' schedules and never send automated spam messages.
               </p>
-            </form>
-
-            <!-- Instant Confirmation State -->
-            <div id="formConfirmation" class="form-confirmation" role="status" aria-live="polite">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2.2" class="confirmation-icon" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M8 12l2.5 2.5L16 9" />
-              </svg>
-              <h3 class="confirmation-title">Thank You for Connecting With HALOGIQ</h3>
-              <p id="confirmationSummary" class="confirmation-summary"></p>
-              <button type="button" id="resetFormBtn" class="btn btn-secondary btn-sm">Submit Another Inquiry</button>
             </div>
 
             <div class="direct-connect-bar">
-              <span>Prefer direct email or WhatsApp?</span>
+              <span>Prefer direct email or phone?</span>
               <div class="direct-connect-links">
-                <a href="mailto:partnerships@halogiq.in?subject=HALOGIQ%20Curriculum%20Walkthrough%20Request">Email: partnerships@halogiq.in</a>
+                <a href="tel:+919481369078">Call: +91 94813 69078</a>
+                <a href="mailto:partnership@halogiq.com?subject=HALOGIQ%20Curriculum%20Walkthrough%20Request">Email: partnership@halogiq.com</a>
               </div>
             </div>
           </div>
@@ -1909,8 +1860,9 @@
         <div class="footer-col">
           <h4>Column 4 (Contact)</h4>
           <ul class="footer-links">
-            <li><a href="mailto:partnerships@halogiq.in">partnerships@halogiq.in</a></li>
-            <li><a href="#home" data-nav="home">www.halogiq.in</a></li>
+            <li><a href="https://wa.me/919481369078" target="_blank" rel="noopener noreferrer">WhatsApp: +91 94813 69078</a></li>
+            <li><a href="mailto:partnership@halogiq.com">partnership@halogiq.com</a></li>
+            <li><a href="#home" data-nav="home">www.halogiq.com</a></li>
             <li>Supporting Schools &amp; Colleges Across India</li>
           </ul>
         </div>

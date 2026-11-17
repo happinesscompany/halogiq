@@ -2131,8 +2131,54 @@ svg {
 
 .direct-connect-links {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
   font-weight: 600;
+}
+
+.whatsapp-walkthrough-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.whatsapp-connect-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: var(--hq-radius-md);
+  background: var(--hq-glass-surface-sage);
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  box-shadow: var(--hq-shadow-sm);
+}
+
+.whatsapp-box-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hq-teal-dark);
+}
+
+.whatsapp-number-display {
+  font-family: var(--hq-font-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.55rem);
+  font-weight: 700;
+  color: var(--hq-text-main);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.whatsapp-number-display:hover {
+  color: var(--hq-teal-dark);
+}
+
+.whatsapp-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .form-confirmation {
