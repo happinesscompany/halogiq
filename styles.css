@@ -71,6 +71,9 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -89,6 +92,8 @@ body {
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
 }
 
@@ -183,8 +188,9 @@ p {
   overflow-wrap: break-word;
 }
 
-h1, h2, h3, h4, td, th, a, span {
+h1, h2, h3, h4, td, th, a, span, code, li {
   overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .eyebrow {
@@ -198,6 +204,7 @@ h1, h2, h3, h4, td, th, a, span {
   letter-spacing: 0.08em;
   color: var(--hq-accent-blue);
   margin-bottom: 14px;
+  max-width: 100%;
 }
 
 .eyebrow.compact {
@@ -209,6 +216,7 @@ h1, h2, h3, h4, td, th, a, span {
   display: inline-block;
   width: 8px;
   height: 8px;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: var(--hq-accent-blue);
   box-shadow: 0 0 8px rgba(37, 99, 235, 0.35);
@@ -732,7 +740,7 @@ svg {
   background: var(--hq-glass-surface-blue);
   border: 1px solid rgba(191, 219, 254, 0.9);
   color: var(--hq-accent-blue);
-  white-space: nowrap;
+  max-width: 100%;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
@@ -1255,7 +1263,6 @@ svg {
 .comparison-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 680px;
   text-align: left;
 }
 
@@ -2264,7 +2271,61 @@ svg {
 }
 
 /* ==========================================================================
-   RESPONSIVE BREAKPOINTS (MOBILE-FIRST 320px TO 1920px)
+   GLOBAL GRID & FLEX CONTAINMENT (PREVENTS MOBILE HORIZONTAL BLEED)
+   ========================================================================== */
+.hero-grid > *,
+.hero-highlights-grid > *,
+.three-col-grid > *,
+.philosophy-grid > *,
+.tab-buttons > *,
+.tab-panel > *,
+.loop-steps-grid > *,
+.two-by-two-grid > *,
+.programmes-grid > *,
+.studio-showcase-grid > *,
+.session-segments > *,
+.phases-grid > *,
+.partner-grid > *,
+.footer-grid > *,
+.double-win-card,
+.context-card,
+.first-inventor-card,
+.pillar-card,
+.tabs-container,
+.memory-comparison-card,
+.table-responsive,
+.loop-svg-container,
+.loop-step-card,
+.dimension-card,
+.stage-card,
+.programme-card,
+.showcase-card,
+.studio-mockup-ui,
+.architecture-visual-card,
+.session-breakdown-bar,
+.phase-card,
+.faq-item,
+.partner-form-card,
+.svg-scroll-viewport {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.svg-scroll-viewport {
+  overflow-x: hidden;
+}
+
+.svg-scroll-viewport svg,
+.double-win-svg-box svg,
+.studio-mockup-ui svg {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (ADAPTIVE ACROSS 320px TO 1920px)
    ========================================================================== */
 @media (max-width: 1180px) {
   .brand-sublabel {
@@ -2286,15 +2347,15 @@ svg {
   }
   .hero-grid,
   .partner-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 36px;
   }
   .tab-panel.active {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
   }
   .three-col-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -2308,49 +2369,101 @@ svg {
   }
   .philosophy-grid,
   .studio-showcase-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 28px;
   }
   .tab-buttons,
   .session-segments,
   .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .section {
-    padding: 72px 0;
+    padding: 64px 0;
   }
   .page-hero {
-    padding: 52px 0 48px;
-  }
-  .mobile-scroll-cue {
-    display: inline-flex;
-  }
-  .svg-scroll-viewport svg {
-    min-width: 640px;
+    padding: 48px 0 44px;
   }
   .three-col-grid,
   .loop-steps-grid,
   .two-by-two-grid,
   .programmes-grid,
   .phases-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
   .footer-links a {
     min-height: 44px;
     padding: 8px 0;
   }
+
+  /* Adaptive 100%-Width Stacked Card Tables on Mobile & Tablet Portrait */
+  .table-responsive {
+    overflow-x: visible;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+  .comparison-table {
+    min-width: 0;
+    width: 100%;
+    display: block;
+  }
+  .comparison-table thead {
+    display: none;
+  }
+  .comparison-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .comparison-table tr {
+    display: block;
+    width: 100%;
+    background: var(--hq-glass-surface-strong);
+    backdrop-filter: var(--hq-glass-blur-sm);
+    -webkit-backdrop-filter: var(--hq-glass-blur-sm);
+    border: 1px solid var(--hq-glass-border);
+    outline: 1px solid var(--hq-glass-border-subtle);
+    border-radius: var(--hq-radius-md);
+    box-shadow: var(--hq-glass-shadow);
+    overflow: hidden;
+  }
+  .comparison-table td {
+    display: block;
+    width: 100% !important;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+  }
+  .comparison-table tr td:last-child {
+    border-bottom: none;
+  }
+  .comparison-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--hq-font-heading);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--hq-text-muted);
+    margin-bottom: 4px;
+  }
+  .comparison-table td.col-structured::before {
+    color: var(--hq-text-teal-ink);
+  }
 }
 
 @media (max-width: 600px) {
   .section {
-    padding: 56px 0;
+    padding: 48px 0;
   }
   .hero-section {
-    padding: 36px 0 52px;
+    padding: 32px 0 48px;
   }
   .container {
     padding: 0 16px;
@@ -2359,7 +2472,18 @@ svg {
   .tab-buttons,
   .session-segments,
   .footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .eyebrow,
+  .double-win-badge,
+  .stage-age-pill,
+  .pillar-num,
+  .scientist-badge,
+  .on-air-badge,
+  .episode-tag,
+  .step-badge {
+    white-space: normal;
+    max-width: 100%;
   }
   .diagram-toggle-group {
     display: flex;
@@ -2386,14 +2510,18 @@ svg {
   .session-breakdown-bar,
   .phase-card,
   .partner-form-card {
-    padding: 20px;
+    padding: 18px;
+  }
+  .double-win-svg-box,
+  .studio-mockup-ui {
+    padding: 12px;
   }
   .faq-question {
-    padding: 18px;
-    font-size: 0.98rem;
+    padding: 16px;
+    font-size: 0.96rem;
   }
   .faq-answer {
-    padding: 14px 18px 18px;
+    padding: 14px 16px 16px;
   }
   .btn {
     width: 100%;
@@ -2402,18 +2530,15 @@ svg {
 
 @media (max-width: 420px) {
   .header-inner {
-    min-height: 68px;
+    min-height: 64px;
+    gap: 10px;
   }
   .halogiq-wordmark {
-    width: 136px;
-    height: 20px;
+    width: 128px;
+    height: 18px;
   }
-  .double-win-svg-box svg,
-  .studio-mockup-ui svg {
-    min-width: 360px;
-  }
-  .double-win-badge {
-    white-space: normal;
+  .container {
+    padding: 0 14px;
   }
 }
 
