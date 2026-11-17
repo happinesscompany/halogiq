@@ -180,6 +180,11 @@ p {
   line-height: 1.72;
   color: var(--hq-text-charcoal);
   max-width: 68ch;
+  overflow-wrap: break-word;
+}
+
+h1, h2, h3, h4, td, th, a, span {
+  overflow-wrap: break-word;
 }
 
 .eyebrow {
@@ -709,6 +714,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 18px;
   padding-bottom: 14px;
@@ -737,6 +743,8 @@ svg {
   padding: 14px;
   margin-bottom: 20px;
   box-shadow: inset 0 2px 6px rgba(30, 41, 59, 0.02);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .double-win-outcomes {
@@ -1412,6 +1420,8 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
@@ -1659,12 +1669,16 @@ svg {
   border-radius: var(--hq-radius-md);
   padding: 20px;
   box-shadow: var(--hq-glass-shadow);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .studio-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
@@ -2252,20 +2266,39 @@ svg {
 /* ==========================================================================
    RESPONSIVE BREAKPOINTS (MOBILE-FIRST 320px TO 1920px)
    ========================================================================== */
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .brand-sublabel {
     display: none;
+  }
+  .nav-link {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+  }
+  .header-cta .btn-sm {
+    padding: 9px 14px;
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  body {
+    background-attachment: scroll;
   }
   .hero-grid,
   .partner-grid {
     grid-template-columns: 1fr;
+    gap: 36px;
   }
   .tab-panel.active {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .three-col-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .main-nav,
   .header-cta .btn {
     display: none;
@@ -2273,32 +2306,38 @@ svg {
   .mobile-menu-toggle {
     display: inline-flex;
   }
-  .three-col-grid,
   .philosophy-grid,
-  .loop-steps-grid,
-  .two-by-two-grid,
-  .programmes-grid,
-  .studio-showcase-grid,
-  .phases-grid {
+  .studio-showcase-grid {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
-  .tab-buttons {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .session-segments {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .tab-buttons,
+  .session-segments,
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
+  .section {
+    padding: 72px 0;
+  }
+  .page-hero {
+    padding: 52px 0 48px;
+  }
   .mobile-scroll-cue {
     display: inline-flex;
   }
   .svg-scroll-viewport svg {
     min-width: 640px;
+  }
+  .three-col-grid,
+  .loop-steps-grid,
+  .two-by-two-grid,
+  .programmes-grid,
+  .phases-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
   .footer-links a {
     min-height: 44px;
@@ -2311,7 +2350,7 @@ svg {
     padding: 56px 0;
   }
   .hero-section {
-    padding: 40px 0 56px;
+    padding: 36px 0 52px;
   }
   .container {
     padding: 0 16px;
@@ -2322,14 +2361,59 @@ svg {
   .footer-grid {
     grid-template-columns: 1fr;
   }
+  .diagram-toggle-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .diagram-toggle-btn {
+    width: 100%;
+    text-align: center;
+  }
   .double-win-card,
+  .context-card,
+  .first-inventor-card,
+  .pillar-card,
   .tabs-container,
-  .partner-form-card,
-  .showcase-card {
+  .memory-comparison-card,
+  .loop-svg-container,
+  .loop-step-card,
+  .dimension-card,
+  .stage-card,
+  .programme-card,
+  .showcase-card,
+  .architecture-visual-card,
+  .session-breakdown-bar,
+  .phase-card,
+  .partner-form-card {
     padding: 20px;
+  }
+  .faq-question {
+    padding: 18px;
+    font-size: 0.98rem;
+  }
+  .faq-answer {
+    padding: 14px 18px 18px;
   }
   .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .header-inner {
+    min-height: 68px;
+  }
+  .halogiq-wordmark {
+    width: 136px;
+    height: 20px;
+  }
+  .double-win-svg-box svg,
+  .studio-mockup-ui svg {
+    min-width: 360px;
+  }
+  .double-win-badge {
+    white-space: normal;
   }
 }
 
