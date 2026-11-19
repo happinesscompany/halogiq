@@ -965,6 +965,420 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateCampusConfigurator();
 
+  // ==========================================================================
+  // 15. PAGE 4, SECTION 4.2: INTERACTIVE 3-TIER ARCHITECTURE & 12-PILLAR INSPECTOR
+  // ==========================================================================
+  const tierWidget = document.getElementById('tierArchitectureWidget');
+  const tierCards = document.querySelectorAll('.arch-tier-card[data-arch-tier]');
+  const tierTriggers = document.querySelectorAll('[data-select-tier]');
+  const subChips = document.querySelectorAll('[data-select-sub]');
+  const tierTableRows = document.querySelectorAll('#tierSummaryTable tr[data-tier-row]');
+  const archInspectorPanel = document.getElementById('archInspectorPanel');
+  const archInspectorKicker = document.getElementById('archInspectorKicker');
+  const archInspectorTag = document.getElementById('archInspectorTag');
+  const archBackToTier = document.getElementById('archBackToTier');
+  const archBackToTierLabel = document.getElementById('archBackToTierLabel');
+  const archInspectorTitle = document.getElementById('archInspectorTitle');
+  const archInspectorSummary = document.getElementById('archInspectorSummary');
+  const archInspectorListLabel = document.getElementById('archInspectorListLabel');
+  const archInspectorList = document.getElementById('archInspectorList');
+  const archInspectorMetrics = document.getElementById('archInspectorMetrics');
+
+  let activeArchTier = '1';
+
+  const ARCH_TIER_DATA = {
+    '1': {
+      kicker: 'TIER 01 · SCIENTIFIC R&D CORE',
+      tag: 'Year-Round R&D',
+      title: 'Six learning scientists behind every campus session.',
+      summary: 'Six full-time researchers at the THC-Institute build and stress-test every classroom module and exam-calm routine before it reaches your students.',
+      listLabel: 'HOW THIS SUPPORTS YOUR CAMPUS',
+      items: [
+        { k: 'Age-Calibrated Modules:', v: 'Curriculum tailored for developmental readiness across ages 8 to 21.' },
+        { k: 'Exam-Calm Protocols:', v: 'Applied neuroscience strategies built to stop blank-outs under pressure.' },
+        { k: 'Me vs. Past Me Rubrics:', v: 'Self-referenced skill tracking with zero public rank shaming.' }
+      ],
+      metrics: [
+        { val: '6 Specialists', lbl: 'Full-Time R&D Wing' },
+        { val: '8 Streams', lbl: 'Age-Calibrated Design' }
+      ]
+    },
+    '2': {
+      kicker: 'TIER 02 · FACULTY EMPOWERMENT',
+      tag: 'Monthly Cadence',
+      title: 'Equipping your teachers with zero added workload.',
+      summary: 'Monthly interactive workshops give your faculty practical tools for higher classroom absorption and active participation, backed by recognized professional credentials.',
+      listLabel: 'HOW THIS SUPPORTS YOUR FACULTY',
+      items: [
+        { k: 'Cognitive Absorption Workshops:', v: 'Monthly hands-on sessions that help teachers cut repeated re-teaching.' },
+        { k: 'Recognized Credentials:', v: 'Formal educator certifications that strengthen your school’s academic profile.' },
+        { k: 'Zero Extra Paperwork:', v: 'HALOGIQ facilitators run sessions and portfolios so faculty focus on core subjects.' }
+      ],
+      metrics: [
+        { val: 'Monthly', lbl: 'Educator Workshops' },
+        { val: '0 Hrs', lbl: 'Added Teacher Grading' }
+      ]
+    },
+    '3': {
+      kicker: 'TIER 03 · CAMPUS DELIVERY',
+      tag: 'Weekly + Monthly',
+      title: 'Weekly on-site sessions backed by a live campus studio.',
+      summary: 'Students build lasting study and speaking habits through weekly 45-minute on-campus labs, monthly In-Campus Executive Studio recordings, and senior exam readiness sprints.',
+      listLabel: 'WHAT HAPPENS ON CAMPUS',
+      items: [
+        { k: 'Weekly 45-Min Labs:', v: 'Active Understand, Explore, Practise, and Reflect sessions mapped into existing slots.' },
+        { k: 'In-Campus Executive Studio:', v: 'Monthly camera-ready talks and mock interviews parents watch proudly.' },
+        { k: 'HALOGIQ Exams (Grades 10–12):', v: 'One-page chapter maps, twisted-question breakdowns, and 5-second stress resets.' }
+      ],
+      metrics: [
+        { val: '45 Mins', lbl: 'Weekly On-Campus Flow' },
+        { val: '100%', lbl: 'Core Syllabus Protected' }
+      ]
+    }
+  };
+
+  const ARCH_SUB_DATA = {
+    // Tier 3 Modules
+    'weekly-labs': {
+      parentTier: '3',
+      kicker: 'TIER 03 MODULE 01 / 03 · CAMPUS DELIVERY',
+      tag: '45-Min Weekly Rhythm',
+      title: 'Weekly 45-Min Labs',
+      summary: 'Students practise active thinking inside existing activity periods or zero-period slots while core syllabus hours stay completely untouched.',
+      listLabel: 'INSIDE EVERY WEEKLY SESSION',
+      items: [
+        { k: 'Understand & Explore (20 mins):', v: 'Breaks one real concept into clear cause-and-effect links before any note-taking starts.' },
+        { k: 'Practise in Squads (15 mins):', v: 'Balanced 4-member teams solve an unseen classroom problem together.' },
+        { k: 'Reflect & Self-Fix (10 mins):', v: 'Each student writes one takeaway they can apply right away in regular subjects.' }
+      ],
+      metrics: [
+        { val: '45 Mins', lbl: 'Weekly On-Campus' },
+        { val: '0 Mins', lbl: 'Core Syllabus Cut' }
+      ]
+    },
+    'executive-studio': {
+      parentTier: '3',
+      kicker: 'TIER 03 MODULE 02 / 03 · CAMPUS DELIVERY',
+      tag: 'Monthly Productions',
+      title: 'In-Campus Executive Studio',
+      summary: 'We set up a professional studio right on your school grounds so students record structured talks and mock interviews every month.',
+      listLabel: 'STUDIO OUTCOMES FOR FAMILIES',
+      items: [
+        { k: 'Camera-Ready Speaking Poise:', v: 'Replaces memorised stage speeches with calm, unscripted three-point speaking.' },
+        { k: 'Monthly Student Reels:', v: 'Gives families tangible audio and video recordings they share proudly.' },
+        { k: 'Open House Showcases:', v: 'Live parent demonstrations where students think and speak clearly on stage.' }
+      ],
+      metrics: [
+        { val: 'Monthly', lbl: 'Studio Recordings' },
+        { val: '100%', lbl: 'On-Campus Setup' }
+      ]
+    },
+    'halogiq-exams': {
+      parentTier: '3',
+      kicker: 'TIER 03 MODULE 03 / 03 · CAMPUS DELIVERY',
+      tag: 'Grades 10 to 12',
+      title: 'HALOGIQ Exams',
+      summary: 'Dedicated board-exam readiness for senior wings focused on chapter mapping, unfamiliar question breakdowns, and calm recall under timed conditions.',
+      listLabel: 'SENIOR BOARD-EXAM TOOLKIT',
+      items: [
+        { k: 'One-Page Chapter Maps:', v: 'Turns twelve-page chapters into fast visual retrieval sheets for pre-board revision.' },
+        { k: 'Twisted-Question Sprints:', v: 'Trains students to read unfamiliar word problems calmly instead of freezing.' },
+        { k: '5-Second Stress Reset:', v: 'Simple breathing and focus drills that keep recall steady from Question 1 onward.' }
+      ],
+      metrics: [
+        { val: 'Grades 10–12', lbl: 'Senior Board Wing' },
+        { val: '5 Seconds', lbl: 'Exam Stress Reset' }
+      ]
+    },
+
+    // Tier 2 Modules
+    'monthly-workshops': {
+      parentTier: '2',
+      kicker: 'TIER 02 MODULE 01 / 03 · FACULTY EMPOWERMENT',
+      tag: 'Monthly Faculty Sessions',
+      title: 'Monthly Educator Workshops',
+      summary: 'Short, practical workshops help your teachers spot attention drops early and run active recall checks during regular subject classes.',
+      listLabel: 'PRACTICAL CLASSROOM GAINS',
+      items: [
+        { k: '50% Less Re-Teaching:', v: 'Active comprehension checks ensure students grasp concepts the first time around.' },
+        { k: 'Shared Campus Vocabulary:', v: 'Teachers reinforce the same 4-step learning loop students practise in HALOGIQ labs.' },
+        { k: 'Classroom-Ready Next Morning:', v: 'Built for busy Indian school timetables with tools usable straight away.' }
+      ],
+      metrics: [
+        { val: 'Monthly', lbl: 'Interactive Sessions' },
+        { val: '50% Less', lbl: 'Classroom Re-Teaching' }
+      ]
+    },
+    'educator-credentials': {
+      parentTier: '2',
+      kicker: 'TIER 02 MODULE 02 / 03 · FACULTY EMPOWERMENT',
+      tag: 'Formal Certification',
+      title: 'Recognized Educator Credentials',
+      summary: 'Participating teachers earn structured professional credentials backed by the THC-Institute, strengthening faculty retention and institutional standing.',
+      listLabel: 'INSTITUTIONAL VALUE FOR SCHOOLS',
+      items: [
+        { k: 'THC-Institute Certification:', v: 'Formal recognition for completing monthly cognitive pedagogy training modules.' },
+        { k: 'Visible NEP 2020 Readiness:', v: 'Demonstrates active teacher upskilling during school inspections and parent orientations.' },
+        { k: 'Career-Building Craft:', v: 'Teachers gain lasting instructional tools they value well beyond one academic year.' }
+      ],
+      metrics: [
+        { val: 'Certified', lbl: 'Faculty Credentials' },
+        { val: 'NEP 2020', lbl: 'Aligned Practice' }
+      ]
+    },
+    'zero-grading': {
+      parentTier: '2',
+      kicker: 'TIER 02 MODULE 03 / 03 · FACULTY EMPOWERMENT',
+      tag: 'Zero Added Workload',
+      title: 'Zero Extra Teacher Workload',
+      summary: 'Your school faculty never have to write extra lesson plans or grade extra worksheets. Our on-site team runs HALOGIQ delivery end to end.',
+      listLabel: 'HOW WE PROTECT TEACHER TIME',
+      items: [
+        { k: 'Dedicated HALOGIQ Facilitators:', v: 'Trained specialists lead every weekly student lab and monthly studio shoot.' },
+        { k: 'Managed Growth Portfolios:', v: 'Our team compiles termly Me vs. Past Me student portfolios for parents.' },
+        { k: 'Protected Teacher Bandwidth:', v: 'Your faculty keep 100% of their focus on core academic subjects and mentoring.' }
+      ],
+      metrics: [
+        { val: '0 Hrs', lbl: 'Extra Teacher Prep' },
+        { val: '100%', lbl: 'Managed On-Site' }
+      ]
+    },
+
+    // Tier 1 Specialists (6 THC-Institute Scientists)
+    neuroscientist: {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 01 / 06 · TIER 01',
+      tag: 'Memory & Exam Calm',
+      title: 'Cognitive Neuroscientist',
+      summary: 'Designs structured recall routines and the 5-second stress reset so students retrieve concepts cleanly during timed exams.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: 'Structured Concept Linking:', v: 'Replaces fragile word-for-word cramming with connected mental maps.' },
+        { k: '5-Second Exam Stress Reset:', v: 'Simple breathing and focus resets that stop cortisol-driven blank-outs.' },
+        { k: 'Attention-Paced Lessons:', v: 'Structures every 45-minute period to hold focus from minute one to reflection.' }
+      ],
+      metrics: [
+        { val: '5 Seconds', lbl: 'Exam Stress Reset' },
+        { val: '4 Steps', lbl: 'Core Learning Loop' }
+      ]
+    },
+    developmental: {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 02 / 06 · TIER 01',
+      tag: 'Ages 8 to 21',
+      title: 'Developmental Psychologist',
+      summary: 'Tunes every activity, squad prompt, and stage milestone to match how reasoning and self-assurance mature from Grade 3 to College.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: 'Three Distinct Age Tracks:', v: 'Separates Foundation, Builder, and Launchpad difficulty cleanly by stage.' },
+        { k: 'Safe Speaking Climates:', v: 'Helps quieter students build vocal confidence without stage anxiety.' },
+        { k: 'Healthy Growth Mindset:', v: 'Normalises self-fixing mistakes instead of fearing red marks.' }
+      ],
+      metrics: [
+        { val: '3 Stages', lbl: 'Age-Matched Tracks' },
+        { val: 'Ages 8–21', lbl: 'Continuous Pathway' }
+      ]
+    },
+    educational: {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 03 / 06 · TIER 01',
+      tag: 'Classroom Absorption',
+      title: 'Educational Psychologist',
+      summary: 'Builds our four-part session architecture and designs monthly teacher workshops so study habits carry straight into Maths and Science.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: 'Four-Part Session Rhythm:', v: 'Balances Understand, Explore, Practise, and Reflect inside every period.' },
+        { k: 'Faster Class Absorption:', v: 'Equips teachers with active checks that cut daily chapter re-teaching.' },
+        { k: 'Syllabus Transfer:', v: 'Ensures learning routines improve regular textbook and board performance.' }
+      ],
+      metrics: [
+        { val: '50% Less', lbl: 'Classroom Re-Teaching' },
+        { val: 'Monthly', lbl: 'Teacher Alignment' }
+      ]
+    },
+    psychometrician: {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 04 / 06 · TIER 01',
+      tag: 'Growth Measurement',
+      title: 'Psychometrician',
+      summary: 'Crafts fair, self-referenced growth rubrics and term portfolios so parents and principals see clear progress across all 8 streams.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: 'Me vs. Past Me Portfolios:', v: 'Measures each learner against their own baseline rather than class rank.' },
+        { k: 'Term Progress Evidence:', v: 'Gives families concrete proof of growth across speaking and recall.' },
+        { k: 'NEP 2020 Alignment:', v: 'Translates competency-based learning policy into observable school records.' }
+      ],
+      metrics: [
+        { val: 'Zero', lbl: 'Public Rank Shaming' },
+        { val: '8 Streams', lbl: 'Tracked Per Term' }
+      ]
+    },
+    'game-architect': {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 05 / 06 · TIER 01',
+      tag: 'Squad Simulations',
+      title: 'Experiential Game Architect',
+      summary: 'Turns abstract thinking frameworks into lively 4-person squad simulations and studio challenges students genuinely enjoy.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: '4-Person Squad Mechanics:', v: 'Balanced team challenges where every member owns an active role.' },
+        { k: 'Applied Problem Sprints:', v: 'Hands-on unseen scenarios that lock study concepts into long-term recall.' },
+        { k: 'Engaging Studio Formats:', v: 'Structured on-camera talks and mock interviews that reward clear thinking.' }
+      ],
+      metrics: [
+        { val: '4-Person', lbl: 'Balanced Squads' },
+        { val: '15 Mins', lbl: 'Live Practise Block' }
+      ]
+    },
+    behavioral: {
+      parentTier: '1',
+      kicker: 'R&D SPECIALIST 06 / 06 · TIER 01',
+      tag: 'Lasting Habits',
+      title: 'Behavioral Scientist',
+      summary: 'Turns classroom insights into repeatable weekly habits so steady study routines and clear speaking last well beyond exam week.',
+      listLabel: 'DIRECT CAMPUS CONTRIBUTION',
+      items: [
+        { k: 'Repeatable Weekly Loops:', v: 'Builds steady study habits that outlast one-day motivational talks.' },
+        { k: 'Post-Test Self-Fixing:', v: 'Guides students to diagnose errors calmly after unit tests and pre-boards.' },
+        { k: 'Home-to-School Continuity:', v: 'Simple revision prompts families recognize during daily homework hours.' }
+      ],
+      metrics: [
+        { val: 'Year-Round', lbl: 'Habit Reinforcement' },
+        { val: 'Termly', lbl: 'Parent Showcases' }
+      ]
+    }
+  };
+
+  function syncTierShellState(tierKey) {
+    activeArchTier = String(tierKey);
+
+    if (tierWidget) {
+      tierWidget.setAttribute('data-active-tier', activeArchTier);
+    }
+
+    tierCards.forEach((card) => {
+      card.classList.toggle('is-active', card.getAttribute('data-arch-tier') === activeArchTier);
+    });
+
+    tierTriggers.forEach((btn) => {
+      const match = btn.getAttribute('data-select-tier') === activeArchTier;
+      btn.setAttribute('aria-pressed', String(match));
+      if (btn.classList.contains('arch-step-pill')) {
+        btn.classList.toggle('active', match);
+      }
+    });
+
+    tierTableRows.forEach((row) => {
+      row.classList.toggle('is-highlighted', row.getAttribute('data-tier-row') === activeArchTier);
+    });
+  }
+
+  function renderArchInspector(payload, backTierKey = null) {
+    if (!payload) return;
+    if (archInspectorKicker) archInspectorKicker.textContent = payload.kicker;
+    if (archInspectorTag) archInspectorTag.textContent = payload.tag;
+
+    if (archBackToTier) {
+      archBackToTier.hidden = !backTierKey;
+      if (backTierKey && archBackToTierLabel) {
+        archBackToTierLabel.textContent = `Back to Tier 0${backTierKey} Overview`;
+      }
+    }
+
+    if (archInspectorTitle) archInspectorTitle.textContent = payload.title;
+    if (archInspectorSummary) archInspectorSummary.textContent = payload.summary;
+    if (archInspectorListLabel) archInspectorListLabel.textContent = payload.listLabel;
+
+    if (archInspectorList) {
+      archInspectorList.innerHTML = payload.items
+        .map((item) => `<li><span class="arch-perk-bar" aria-hidden="true"></span><div><strong>${item.k}</strong> ${item.v}</div></li>`)
+        .join('');
+    }
+
+    if (archInspectorMetrics) {
+      archInspectorMetrics.innerHTML = payload.metrics
+        .map((m) => `<div class="arch-metric-tile"><span class="arch-metric-val">${m.val}</span><span class="arch-metric-lbl">${m.lbl}</span></div>`)
+        .join('');
+    }
+  }
+
+  function selectArchTier(tierKey) {
+    const key = String(tierKey);
+    const data = ARCH_TIER_DATA[key];
+    if (!data) return;
+
+    syncTierShellState(key);
+
+    subChips.forEach((chip) => {
+      chip.classList.remove('is-selected');
+      chip.setAttribute('aria-pressed', 'false');
+    });
+
+    renderArchInspector(data, null);
+  }
+
+  function selectArchSubModule(subKey) {
+    const data = ARCH_SUB_DATA[subKey];
+    if (!data) return;
+
+    syncTierShellState(data.parentTier);
+
+    subChips.forEach((chip) => {
+      const match = chip.getAttribute('data-select-sub') === subKey;
+      chip.classList.toggle('is-selected', match);
+      chip.setAttribute('aria-pressed', String(match));
+    });
+
+    renderArchInspector(data, data.parentTier);
+  }
+
+  function revealArchInspectorOnMobile() {
+    if (!archInspectorPanel || window.innerWidth > 1024) return;
+    const rect = archInspectorPanel.getBoundingClientRect();
+    const isVisible = rect.top >= 60 && rect.top <= window.innerHeight - 180;
+    if (!isVisible) {
+      archInspectorPanel.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'nearest'
+      });
+    }
+  }
+
+  tierTriggers.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      selectArchTier(btn.getAttribute('data-select-tier'));
+      if (!btn.classList.contains('arch-step-pill')) {
+        revealArchInspectorOnMobile();
+      }
+    });
+  });
+
+  subChips.forEach((chip) => {
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectArchSubModule(chip.getAttribute('data-select-sub'));
+      revealArchInspectorOnMobile();
+    });
+  });
+
+  if (archBackToTier) {
+    archBackToTier.addEventListener('click', () => {
+      selectArchTier(activeArchTier);
+    });
+  }
+
+  tierTableRows.forEach((row) => {
+    row.addEventListener('click', () => {
+      selectArchTier(row.getAttribute('data-tier-row'));
+    });
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectArchTier(row.getAttribute('data-tier-row'));
+      }
+    });
+  });
+
   // Initialize initial view from URL hash
   const initialParsed = parseHash(window.location.hash);
   activateRoute(initialParsed.route, {
