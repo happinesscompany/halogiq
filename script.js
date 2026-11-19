@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg>',
         title: 'NEP 2020 Execution',
-        sub: 'Tangible campus mandate'
+        sub: 'Practical campus mandate'
       },
       {
         icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
@@ -584,19 +584,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const LOOP_STEP_SUMMARIES = {
     '1': {
-      label: 'Selected Step 01 — OBSERVE:',
+      label: 'Selected Step 01: OBSERVE ·',
       text: 'Reading an unfamiliar Science problem or History topic calmly to spot the main relationship before trying to memorise details.'
     },
     '2': {
-      label: 'Selected Step 02 — ENGINEER:',
+      label: 'Selected Step 02: ENGINEER ·',
       text: 'Turning a twelve-page chapter into a clear one-page visual map or structuring an unscripted talk into three clear points.'
     },
     '3': {
-      label: 'Selected Step 03 — TEST:',
+      label: 'Selected Step 03: TEST ·',
       text: 'Explaining a tough concept to a squad partner in plain language to immediately see which step still needs clarity.'
     },
     '4': {
-      label: 'Selected Step 04 — SELF-FIX:',
+      label: 'Selected Step 04: SELF-FIX ·',
       text: 'Reviewing a practice test to refine study strategy rather than feeling discouraged by a score.'
     }
   };
@@ -698,6 +698,272 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateWhatsAppWalkthroughLink();
+
+  // ==========================================================================
+  // 12. V4.2 MODULE 1: 30-SECOND CLASSROOM CHALLENGE SWITCHER (#home)
+  // ==========================================================================
+  const challengePills = document.querySelectorAll('[data-challenge]');
+  const challengeTagEl = document.getElementById('challengeTag');
+  const challengePromptEl = document.getElementById('challengePromptText');
+  const challengeRoteMetaEl = document.getElementById('challengeRoteMeta');
+  const challengeRoteTitleEl = document.getElementById('challengeRoteTitle');
+  const challengeRoteBodyEl = document.getElementById('challengeRoteBody');
+  const challengeRoteOutcomeEl = document.getElementById('challengeRoteOutcome');
+  const challengeHalogiqMetaEl = document.getElementById('challengeHalogiqMeta');
+  const challengeHalogiqTitleEl = document.getElementById('challengeHalogiqTitle');
+  const challengeHalogiqStepsEl = document.getElementById('challengeHalogiqSteps');
+  const challengeHalogiqOutcomeEl = document.getElementById('challengeHalogiqOutcome');
+
+  const CHALLENGES = {
+    exam: {
+      tag: 'BOARD EXAM HALL',
+      prompt: 'Question 1 on the Grade 10 Physics paper describes a real-world setup you have never seen in the textbook. The clock is running.',
+      roteMeta: 'Cortisol Spike',
+      roteTitle: 'Searches for a memorised paragraph, then blanks out',
+      roteBody: 'Because the wording does not match the revision sheet, heart rate jumps and stress hormones block memory recall. The student assumes it is out of syllabus and loses ten minutes staring at the page.',
+      roteOutcome: 'Panic spills into Questions 2 and 3.',
+      halogiqMeta: '5-Sec Calm Reset',
+      halogiqTitle: 'Resets focus, isolates the principle, rebuilds the answer',
+      steps: [
+        { k: '01 Observe:', v: 'Takes one 5-second breath and spots the two known physical variables.' },
+        { k: '02 Engineer:', v: 'Connects the scenario to the core cause-and-effect rule on a quick scratch map.' },
+        { k: '03 Test & Self-Fix:', v: 'Checks units and logic before writing a clean step-by-step solution.' }
+      ],
+      halogiqOutcome: 'Full conceptual clarity and steady nerves for the rest of the paper.'
+    },
+    stage: {
+      tag: 'ASSEMBLY STAGE & STUDIO',
+      prompt: 'A teacher hands you the mic in morning assembly: "Should AI grade student essays?" You have ten seconds and no written speech.',
+      roteMeta: 'Script Freeze',
+      roteTitle: 'Hunts for exact sentences and rushes off stage',
+      roteBody: 'Without a memorised speech to recite, working memory jams. The student repeats the first line twice, avoids eye contact, and wraps up in ten uncomfortable seconds.',
+      roteOutcome: 'Strong ideas stay unspoken and stage fear deepens.',
+      halogiqMeta: '10-Sec Structure',
+      halogiqTitle: 'Builds a 3-point mental frame and speaks calmly',
+      steps: [
+        { k: '01 Observe:', v: 'Pauses for two seconds, makes steady eye contact, and picks one clear stance.' },
+        { k: '02 Engineer:', v: 'Organises 1 core claim, 2 concrete classroom examples, and 1 short closing line.' },
+        { k: '03 Test & Self-Fix:', v: 'Reads the room\'s reactions, slows pacing, and lands the closing point cleanly.' }
+      ],
+      halogiqOutcome: 'Clear unscripted speaking that parents and teachers notice right away.'
+    },
+    ai: {
+      tag: 'HOMEWORK & AI LITERACY',
+      prompt: 'An AI tool writes a smooth, confident paragraph for a Grade 9 History assignment, with one subtle fabricated date tucked inside.',
+      roteMeta: 'Blind Copy',
+      roteTitle: 'Copies the polished text without checking a single claim',
+      roteBody: 'Because the grammar sounds authoritative, the student treats the output as settled truth, submits it verbatim, and struggles when asked a follow-up question in viva.',
+      roteOutcome: 'Zero real understanding and growing dependence on shortcuts.',
+      halogiqMeta: 'First-Principles Audit',
+      halogiqTitle: 'Questions the source, verifies facts, and owns the reasoning',
+      steps: [
+        { k: '01 Observe:', v: 'Treats AI output as an unverified draft and flags specific dates and claims.' },
+        { k: '02 Engineer:', v: 'Cross-checks the claim against primary notes and maps the real historical sequence.' },
+        { k: '03 Test & Self-Fix:', v: 'Rewrites the argument in plain words so they can defend every line aloud.' }
+      ],
+      halogiqOutcome: 'Uses AI as a research tool while staying sharper than the prompt.'
+    }
+  };
+
+  function renderChallenge(key) {
+    const data = CHALLENGES[key];
+    if (!data) return;
+
+    challengePills.forEach((btn) => {
+      const active = btn.getAttribute('data-challenge') === key;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+
+    if (challengeTagEl) challengeTagEl.textContent = data.tag;
+    if (challengePromptEl) challengePromptEl.textContent = data.prompt;
+    if (challengeRoteMetaEl) challengeRoteMetaEl.textContent = data.roteMeta;
+    if (challengeRoteTitleEl) challengeRoteTitleEl.textContent = data.roteTitle;
+    if (challengeRoteBodyEl) challengeRoteBodyEl.textContent = data.roteBody;
+    if (challengeRoteOutcomeEl) challengeRoteOutcomeEl.innerHTML = `<strong>Result:</strong> ${data.roteOutcome}`;
+    if (challengeHalogiqMetaEl) challengeHalogiqMetaEl.textContent = data.halogiqMeta;
+    if (challengeHalogiqTitleEl) challengeHalogiqTitleEl.textContent = data.halogiqTitle;
+    if (challengeHalogiqStepsEl) {
+      challengeHalogiqStepsEl.innerHTML = data.steps
+        .map((s) => `<div class="challenge-step-row"><strong>${s.k}</strong> ${s.v}</div>`)
+        .join('');
+    }
+    if (challengeHalogiqOutcomeEl) challengeHalogiqOutcomeEl.innerHTML = `<strong>Result:</strong> ${data.halogiqOutcome}`;
+  }
+
+  challengePills.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      renderChallenge(btn.getAttribute('data-challenge'));
+    });
+  });
+
+  // ==========================================================================
+  // 13. V4.2 MODULE 3: LIVE SAMPLE SESSION STAGE FILTER (#programmes)
+  // ==========================================================================
+  const sessionFilterBtns = document.querySelectorAll('[data-stage-filter]');
+  const sessionCards = document.querySelectorAll('.session-sample-card');
+  const sessionFilterCount = document.getElementById('sessionFilterCount');
+
+  sessionFilterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const stage = btn.getAttribute('data-stage-filter');
+      sessionFilterBtns.forEach((b) => {
+        const isMatch = b === btn;
+        b.classList.toggle('active', isMatch);
+        b.setAttribute('aria-pressed', String(isMatch));
+      });
+
+      let visibleCount = 0;
+      sessionCards.forEach((card) => {
+        const stages = (card.getAttribute('data-stage') || '').split(' ');
+        const show = stage === 'all' || stages.includes(stage);
+        card.classList.toggle('is-hidden', !show);
+        if (show) visibleCount += 1;
+      });
+
+      if (sessionFilterCount) {
+        sessionFilterCount.textContent = `${visibleCount} sample session${visibleCount === 1 ? '' : 's'}`;
+      }
+    });
+  });
+
+  // ==========================================================================
+  // 14. V4.2 MODULE 2: INTERACTIVE CAMPUS BLUEPRINT CONFIGURATOR (#schools)
+  // ==========================================================================
+  const scopeBtns = document.querySelectorAll('[data-config-scope]');
+  const slotBtns = document.querySelectorAll('[data-config-slot]');
+  const cfgTrackKicker = document.getElementById('cfgTrackKicker');
+  const cfgTrackTitle = document.getElementById('cfgTrackTitle');
+  const cfgTrackSummary = document.getElementById('cfgTrackSummary');
+  const cfgSessionVal = document.getElementById('cfgSessionVal');
+  const cfgSessionLbl = document.getElementById('cfgSessionLbl');
+  const cfgDeliverables = document.getElementById('cfgDeliverables');
+  const cfgWhatsappBtn = document.getElementById('cfgWhatsappBtn');
+  const cfgPartnerLink = document.getElementById('cfgPartnerLink');
+
+  let activeScope = 'elevate';
+  let activeSlot = 'activity';
+
+  const SCOPE_CONFIG = {
+    elevate: {
+      kicker: 'RECOMMENDED TRACK · FULL CAMPUS',
+      title: 'HALOGIQ Elevate (Full Campus + Studio)',
+      label: 'Full Campus (Grades 3-12)',
+      partnerRadio: 'elevate',
+      deliverables: [
+        'All 8 Skill & Literacy Streams',
+        'In-Campus Executive Studio',
+        'HALOGIQ Exams (Grades 10-12)',
+        'Monthly Teacher Certification',
+        'Open House Parent Showcases',
+        'District Exclusivity Eligible'
+      ]
+    },
+    exams: {
+      kicker: 'RECOMMENDED TRACK · BOARD COHORT',
+      title: 'HALOGIQ Exams (Grades 10, 11 & 12)',
+      label: 'Senior Board Wing (Grades 10-12)',
+      partnerRadio: 'exams',
+      deliverables: [
+        '4-Step Learning & Recall Loop',
+        'One-Page Chapter Mapping Labs',
+        'Twisted Question Breakdowns',
+        '5-Second Exam Stress Reset',
+        'Pre-Board Time Allocation Sprints',
+        'Faculty Orientation Included'
+      ]
+    },
+    college: {
+      kicker: 'RECOMMENDED TRACK · LAUNCHPAD',
+      title: 'HALOGIQ Launchpad (College & Senior Wing)',
+      label: 'College Launchpad Wing',
+      partnerRadio: 'elevate',
+      deliverables: [
+        'Executive Studio Keynote Lab',
+        'Mock Interview & GD Panels',
+        'Stream 07: AI Literacy Lab',
+        'Stream 08: Financial Wisdom Lab',
+        'Case-Study Deconstruction',
+        'Career & Placement Poise'
+      ]
+    }
+  };
+
+  const SLOT_CONFIG = {
+    activity: {
+      label: 'Activity / Life-Skill Slot',
+      val: '45 mins',
+      lbl: 'Weekly On-Campus',
+      summary: (scopeLabel) => `Fits neatly into existing activity or life-skill periods for your ${scopeLabel} while keeping every core subject hour intact.`
+    },
+    zero: {
+      label: 'Zero-Period Sessions',
+      val: '20-30 mins',
+      lbl: 'Zero-Period Flow',
+      summary: (scopeLabel) => `Runs as crisp morning zero-period sessions for your ${scopeLabel}, energizing focus before Period 1 without touching syllabus slots.`
+    },
+    studio: {
+      label: 'After-Class Studio Lab',
+      val: '45-60 mins',
+      lbl: 'Beyond-Class Lab',
+      summary: (scopeLabel) => `Operates in dedicated after-class studio and squad lab blocks for your ${scopeLabel} with zero daytime timetable changes.`
+    }
+  };
+
+  function updateCampusConfigurator() {
+    const scopeData = SCOPE_CONFIG[activeScope];
+    const slotData = SLOT_CONFIG[activeSlot];
+    if (!scopeData || !slotData) return;
+
+    scopeBtns.forEach((b) => {
+      const match = b.getAttribute('data-config-scope') === activeScope;
+      b.classList.toggle('active', match);
+      b.setAttribute('aria-checked', String(match));
+    });
+
+    slotBtns.forEach((b) => {
+      const match = b.getAttribute('data-config-slot') === activeSlot;
+      b.classList.toggle('active', match);
+      b.setAttribute('aria-checked', String(match));
+    });
+
+    if (cfgTrackKicker) cfgTrackKicker.textContent = scopeData.kicker;
+    if (cfgTrackTitle) cfgTrackTitle.textContent = scopeData.title;
+    if (cfgTrackSummary) cfgTrackSummary.textContent = slotData.summary(scopeData.label);
+    if (cfgSessionVal) cfgSessionVal.textContent = slotData.val;
+    if (cfgSessionLbl) cfgSessionLbl.textContent = slotData.lbl;
+
+    if (cfgDeliverables) {
+      cfgDeliverables.innerHTML = scopeData.deliverables
+        .map((item) => `<span class="config-deliv-pill">&#10003; ${item}</span>`)
+        .join('');
+    }
+
+    if (cfgWhatsappBtn) {
+      const msg = `Hello HALOGIQ Team, we would like a custom Campus Blueprint for ${scopeData.label} using ${slotData.label}.`;
+      cfgWhatsappBtn.setAttribute('href', `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
+    }
+
+    if (cfgPartnerLink) {
+      cfgPartnerLink.setAttribute('data-pathway-select', scopeData.partnerRadio);
+    }
+  }
+
+  scopeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeScope = btn.getAttribute('data-config-scope');
+      updateCampusConfigurator();
+    });
+  });
+
+  slotBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeSlot = btn.getAttribute('data-config-slot');
+      updateCampusConfigurator();
+    });
+  });
+
+  updateCampusConfigurator();
 
   // Initialize initial view from URL hash
   const initialParsed = parseHash(window.location.hash);
