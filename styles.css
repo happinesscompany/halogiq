@@ -689,29 +689,23 @@ input:focus-visible,
   gap: 10px;
   color: var(--color-ink-charcoal);
   flex-shrink: 0;
+  transition: opacity 0.2s ease;
 }
 
-.brand-mark-tile {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background-color: var(--color-ink-charcoal);
-  color: var(--color-paper-white);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.25s var(--ease-editorial), background-color 0.2s ease;
-}
-
-.brand-link:hover .brand-mark-tile {
-  background-color: var(--color-midnight-wine);
-  transform: scale(1.04);
+.brand-link:hover {
+  opacity: 0.82;
 }
 
 .halogiq-wordmark {
   display: block;
-  height: 17px;
+  height: 22px;
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.halogiq-wordmark-footer {
+  height: 24px;
 }
 
 .main-nav {
@@ -3756,10 +3750,15 @@ input:focus-visible,
   transform: translateY(10%);
 }
 
-.footer-watermark svg {
+.footer-watermark svg,
+.footer-watermark-img {
   width: 100%;
   height: auto;
   display: block;
+}
+
+.footer-watermark-img {
+  opacity: 0.08;
 }
 
 /* ==========================================================================
