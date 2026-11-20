@@ -11,9 +11,9 @@
   <meta property="og:url" content="https://www.halogiq.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='24' fill='%23421d24'/%3E%3Cpath d='M64 20C92 20 108 35 108 60C108 85 92 100 64 100C36 100 20 85 20 60C20 35 36 20 64 20ZM64 36C45 36 36 45 36 60C36 75 45 84 64 84C83 84 92 75 92 60C92 45 83 36 64 36Z' fill='%23d4c7ff' fill-rule='evenodd'/%3E%3Cpath d='M70 59L110 99L98 111L58 71Z' fill='%23ffffff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=14" />
 </head>
 <body>
 
@@ -51,18 +51,59 @@
   <div id="routeAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
   <!-- ========================================================================
-       PILL ANNOUNCEMENT BANNER (FLUSH TOP — MIDNIGHT WINE #421d24)
+       DUAL ROTATING ANNOUNCEMENT BANNER (MIDNIGHT WINE #421d24 — SWIPE UP)
+       Slide 1: Institutional Positioning | Slide 2: Live Quarterly Countdown
        ======================================================================== -->
-  <div class="announcement-banner" role="region" aria-label="Campus Partnership Announcement">
-    <div class="announcement-inner">
-      <span class="announcement-icon" aria-hidden="true">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      </span>
-      <span class="announcement-text">On-Site Learning &amp; Studio for Schools &amp; Colleges</span>
-      <a href="#partner" class="announcement-cta" data-nav="partner">
-        <span>Request a Curriculum Walkthrough</span>
-        <span aria-hidden="true">&rarr;</span>
-      </a>
+  <div class="announcement-banner" id="announcementBanner" role="region" aria-label="Campus Partnership and Application Announcements" data-active-slide="0">
+    <div class="announcement-viewport">
+      <!-- Slide 1: Institutional Positioning -->
+      <div class="announcement-slide is-active" id="anncSlide0" data-slide-index="0" aria-hidden="false">
+        <div class="announcement-inner announcement-inner-brand">
+          <span class="announcement-icon" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </span>
+          <span class="announcement-text announcement-text-desktop">On-Site Learning &amp; Studio for Schools &amp; Colleges</span>
+          <span class="announcement-text announcement-text-mobile">On-Site Learning &amp; Studio</span>
+          <a href="#partner" class="announcement-cta" data-nav="partner">
+            <span class="announcement-cta-desktop">Request a Curriculum Walkthrough</span>
+            <span class="announcement-cta-mobile">Walkthrough</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Slide 2: Astra Nova-Inspired Live Quarterly Application Countdown (Jan-Dec) -->
+      <div class="announcement-slide is-waiting" id="anncSlide1" data-slide-index="1" aria-hidden="true">
+        <div class="announcement-inner announcement-inner-countdown">
+          <span class="annc-live-dot" aria-hidden="true"></span>
+          <span class="annc-deadline-label">
+            Next Application Due <span id="anncDeadlineFull">December 31</span>:
+          </span>
+          <div class="annc-clock" aria-label="Time remaining until quarterly application deadline">
+            <span class="annc-digit" id="anncDays">00</span><span class="annc-unit">D</span>
+            <span class="annc-sep" aria-hidden="true">:</span>
+            <span class="annc-digit" id="anncHours">00</span><span class="annc-unit">H</span>
+            <span class="annc-sep" aria-hidden="true">:</span>
+            <span class="annc-digit" id="anncMinutes">00</span><span class="annc-unit">M</span>
+            <span class="annc-sep" aria-hidden="true">:</span>
+            <span class="annc-digit" id="anncSeconds">00</span><span class="annc-unit annc-unit-last">S</span>
+          </div>
+          <span class="annc-pipe" aria-hidden="true">|</span>
+          <a href="https://opnform.com/forms/halogiq-school-application-form-kahph5" target="_blank" rel="noopener noreferrer" class="annc-apply-cta" tabindex="-1">
+            <span>Apply Now</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="https://opnform.com/forms/halogiq-school-application-form-kahph5" target="_blank" rel="noopener noreferrer" class="annc-apply-cta-mobile" id="anncMobileCta" tabindex="-1" aria-label="Apply by December 31">
+            <span class="annc-u">Apply</span> by <span id="anncDeadlineShort">DEC 31</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Subtle Vertical Slide Switcher Pips -->
+    <div class="announcement-pips" role="tablist" aria-label="Switch announcement banner">
+      <button type="button" class="announcement-pip is-active" data-slide-target="0" role="tab" aria-selected="true" aria-controls="anncSlide0" aria-label="Show campus partnership announcement"></button>
+      <button type="button" class="announcement-pip" data-slide-target="1" role="tab" aria-selected="false" aria-controls="anncSlide1" aria-label="Show quarterly application deadline countdown"></button>
     </div>
   </div>
 
@@ -294,7 +335,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
               <span>HALOGIQ 4-Step Loop</span>
             </div>
-            <p>Twisted question in <span class="glass-code-tag">#board-exam-prep</span>? Reset your focus in 5 seconds and run the loop:</p>
+            <p>Twisted question in <span class="nowrap-inline"><span class="glass-code-tag">#board-exam-prep</span>?</span> Reset your focus in 5 seconds and run the loop:</p>
             <div class="glass-reply-bubble">ready!</div>
             <div class="glass-chip-row">
               <span class="glass-step-chip">01 Observe</span>
@@ -545,7 +586,7 @@
                     <span class="lagoon-ui-pill">Dual Outcome</span>
                   </div>
                   <!-- GRAPHIC 2 UPGRADED: Animated Signal-Flow Pulses + Live Equalizer + Gliding Calm Orb -->
-                  <svg viewBox="0 0 480 215" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Unified Central Learning Loop feeding HALOGIQ Elevate Studio and HALOGIQ Exams">
+                  <svg class="lagoon-desktop-svg" viewBox="0 0 480 215" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Unified Central Learning Loop feeding HALOGIQ Elevate Studio and HALOGIQ Exams">
                     <g aria-hidden="true">
                       <rect x="44" y="8" width="392" height="54" rx="12" fill="#f2f0eb" stroke="#714cb6" stroke-width="1.5" />
                       <text x="240" y="26" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="10.5" font-weight="600" letter-spacing="0.06em">CENTRAL 4-STEP LEARNING LOOP</text>
@@ -605,6 +646,36 @@
                       <text x="334" y="188" fill="#666666" font-family="Inter, sans-serif" font-size="9.5">5-Sec Stress Calm</text>
                     </g>
                   </svg>
+
+                  <!-- Mobile-Native Legible Stacked Architecture Diagram (<= 768px) -->
+                  <div class="lagoon-mobile-diagram" aria-label="Unified Central Learning Loop feeding HALOGIQ Elevate Studio and HALOGIQ Exams">
+                    <div class="lmd-loop-box">
+                      <span class="lmd-loop-kicker">Central 4-Step Learning Loop</span>
+                      <div class="lmd-step-grid">
+                        <span class="lmd-step-pill">1. Observe</span>
+                        <span class="lmd-step-pill">2. Engineer</span>
+                        <span class="lmd-step-pill">3. Test</span>
+                        <span class="lmd-step-pill is-accent">4. Self-Fix</span>
+                      </div>
+                    </div>
+                    <div class="lmd-flow-divider" aria-hidden="true">
+                      <span class="lmd-flow-line"></span>
+                      <span class="lmd-flow-badge">&darr; Feeds Both Campus Outcomes &darr;</span>
+                      <span class="lmd-flow-line"></span>
+                    </div>
+                    <div class="lmd-outcomes-grid">
+                      <div class="lmd-outcome-card lmd-card-elevate">
+                        <span class="lmd-card-kicker">HALOGIQ Elevate + Studio</span>
+                        <strong>Articulate Leadership</strong>
+                        <span class="lmd-card-desc">Podcasts, interviews &amp; unscripted stage voice</span>
+                      </div>
+                      <div class="lmd-outcome-card lmd-card-exams">
+                        <span class="lmd-card-kicker">HALOGIQ Exams</span>
+                        <strong>Board Exam Mastery</strong>
+                        <span class="lmd-card-desc">Chapter recall webs &amp; 5-sec stress calm</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Superhuman-Style Floating Verification Badge + Pointer -->
@@ -940,7 +1011,7 @@
               <h4>Visualising the Shift: Static Information Retrieval vs. First-Principles Human Discovery</h4>
               <span class="lagoon-ui-pill">First Inventor Architecture</span>
             </div>
-            <div class="svg-scroll-viewport">
+            <div class="svg-scroll-viewport desktop-svg-only">
               <svg viewBox="0 0 880 185" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison between Static Information Retrieval in 2 seconds versus Human First-Principles Discovery like Ramanujan, Einstein, and Edison">
                 <g aria-hidden="true">
                   <!-- Left Box: Static Information Retrieval -->
@@ -982,6 +1053,30 @@
                   </g>
                 </g>
               </svg>
+            </div>
+
+            <!-- Mobile-Native Stacked Comparison (<= 768px — Zero Horizontal Clipping) -->
+            <div class="mobile-diagram-stack first-inventor-mobile">
+              <div class="m-inv-card m-inv-static">
+                <span class="m-inv-kicker">Static Information Retrieval (2 Seconds)</span>
+                <h5>AI, Search &amp; Smartphones</h5>
+                <p>Retrieves textbook definitions, dates, and static formulas in 2 seconds.</p>
+                <span class="m-inv-tag">Rote Cramming = Redundant</span>
+              </div>
+              <div class="m-inv-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              </div>
+              <div class="m-inv-card m-inv-human">
+                <span class="m-inv-kicker">Human First-Principles Discovery (The HALOGIQ Way)</span>
+                <h5>Ramanujan &bull; Einstein &bull; Edison</h5>
+                <p>No textbook to copy from: they discovered by observing patterns and testing boundaries.</p>
+                <div class="m-inv-chips">
+                  <span class="m-inv-chip">Observe</span>
+                  <span class="m-inv-chip">Question</span>
+                  <span class="m-inv-chip is-lilac">Test</span>
+                  <span class="m-inv-chip is-lilac">Build</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1283,8 +1378,8 @@
             </div>
             <div class="enterprise-proof-card">
               <span class="enterprise-proof-num">03</span>
-              <h3>Protected District Advantage</h3>
-              <p>We limit full-campus HALOGIQ Elevate partnerships per educational district so your school keeps its distinct standing in the neighbourhood.</p>
+              <h3>One Founding School Per District</h3>
+              <p>In Phase 1, we onboard one Founding Partner School per educational district after a Campus Readiness Audit — keeping on-site mentorship unhurried and giving your school distinct standing in the neighbourhood.</p>
             </div>
           </div>
         </div>
@@ -1369,7 +1464,7 @@
               </div>
             </div>
 
-            <div class="svg-scroll-viewport">
+            <div class="svg-scroll-viewport desktop-svg-only">
               <svg viewBox="0 0 800 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left State A shows Fragile Chain of Glass Beads breaking when Bead 3 is forgotten; Right State B shows Resilient Connected Web of Cause and Effect with a 5-Second Calm Reset badge">
                 <g aria-hidden="true">
                   <!-- Left State A: Surface Memorisation -->
@@ -1461,6 +1556,125 @@
                 </g>
               </svg>
             </div>
+
+            <!-- Mobile-Native Synced Memory Architecture Stack (<= 768px — Full Animated Web Clarity, Zero Horizontal Clipping) -->
+            <div class="mobile-diagram-stack mobile-memory-compare">
+              <div class="m-mem-card m-mem-surface svg-state-active" id="mobStateSurface">
+                <div class="m-mem-head-row">
+                  <span class="m-mem-kicker">State A &middot; Surface Memorised Chain</span>
+                  <span class="m-fragile-pill">Fragile Linear Chain</span>
+                </div>
+                <p class="m-mem-sub">Linear word-for-word storage: 1 forgotten keyword snaps the entire recall path.</p>
+
+                <!-- Dedicated Mobile-Proportioned Animated Glass-Bead Fracture SVG -->
+                <div class="m-mem-svg-stage m-stage-surface">
+                  <svg viewBox="0 0 280 118" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Surface memorised chain of glass beads snapping at B3 when hit by a twisted question, causing B4 to B6 to drift loose">
+                    <g aria-hidden="true">
+                      <rect x="48" y="6" width="184" height="24" rx="12" fill="#421d24" />
+                      <text x="140" y="21.5" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="10.5" font-weight="600">Twisted Question Hits B3</text>
+                      <path d="M126 30 L121 45" stroke="#421d24" stroke-width="2" stroke-linecap="round" />
+                      <polygon points="116.5,42 121,49 125.5,43" fill="#421d24" />
+
+                      <line x1="40" y1="68" x2="54" y2="68" stroke="#421d24" stroke-width="2" stroke-dasharray="4 3" />
+                      <line x1="86" y1="68" x2="101" y2="68" stroke="#421d24" stroke-width="2" stroke-dasharray="4 3" />
+
+                      <circle cx="24" cy="68" r="16" fill="#ffffff" stroke="#666666" stroke-width="1.6" />
+                      <text x="24" y="72" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11" font-weight="600">B1</text>
+
+                      <circle cx="70" cy="68" r="16" fill="#ffffff" stroke="#666666" stroke-width="1.6" />
+                      <text x="70" y="72" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11" font-weight="600">B2</text>
+
+                      <g class="bead-fracture-pulse">
+                        <circle cx="118" cy="68" r="17" fill="#f7e8ea" stroke="#421d24" stroke-width="2.2" stroke-dasharray="3.5 2.5" />
+                        <text x="118" y="72" text-anchor="middle" fill="#421d24" font-family="Inter, sans-serif" font-size="11.5" font-weight="700">B3?</text>
+                      </g>
+
+                      <!-- Visual Snap Gap Marker -->
+                      <path d="M141 62 L149 74 M149 62 L141 74" stroke="#be123c" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+
+                      <g class="bead-drift-loose">
+                        <line x1="186" y1="81" x2="200" y2="84" stroke="#c8c5be" stroke-width="1.6" stroke-dasharray="3 4" />
+                        <line x1="228" y1="89" x2="242" y2="92" stroke="#c8c5be" stroke-width="1.6" stroke-dasharray="3 4" />
+                        <circle cx="172" cy="78" r="15" fill="#ffffff" stroke="#a8a6a1" stroke-width="1.5" />
+                        <text x="172" y="82" text-anchor="middle" fill="#666666" font-family="Inter, sans-serif" font-size="10.5" font-weight="600">B4</text>
+                        <circle cx="214" cy="86" r="15" fill="#ffffff" stroke="#a8a6a1" stroke-width="1.5" />
+                        <text x="214" y="90" text-anchor="middle" fill="#666666" font-family="Inter, sans-serif" font-size="10.5" font-weight="600">B5</text>
+                        <circle cx="256" cy="94" r="15" fill="#ffffff" stroke="#a8a6a1" stroke-width="1.5" />
+                        <text x="256" y="98" text-anchor="middle" fill="#666666" font-family="Inter, sans-serif" font-size="10.5" font-weight="600">B6</text>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+
+                <div class="m-mem-alert">Result: Cortisol spike blocks paragraph retrieval</div>
+              </div>
+
+              <div class="m-mem-card m-mem-structured svg-state-active" id="mobStateStructured">
+                <div class="m-mem-head-row">
+                  <span class="m-mem-kicker">State B &middot; HALOGIQ Connected Web</span>
+                  <span class="m-calm-pill">5-Sec Calm Reset</span>
+                </div>
+                <p class="m-mem-sub">Multi-node cause &amp; effect web: even if one wording is unfamiliar, alternate concept paths fire straight into Recall.</p>
+
+                <!-- Dedicated Mobile-Proportioned Animated Neural Concept Web SVG -->
+                <div class="m-mem-svg-stage m-stage-structured">
+                  <svg viewBox="0 0 280 164" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HALOGIQ connected concept web linking Why, Cause, Rule, and Link along four interconnected paths with animated recall pulses converging on Recall">
+                    <g aria-hidden="true">
+                      <!-- Interconnected Cause-Effect Web Edges -->
+                      <g stroke="rgba(212,199,255,0.72)" stroke-width="1.9" stroke-linecap="round">
+                        <line x1="98" y1="34" x2="34" y2="82" />
+                        <line x1="98" y1="34" x2="154" y2="82" />
+                        <line x1="34" y1="82" x2="98" y2="130" />
+                        <line x1="154" y1="82" x2="98" y2="130" />
+                        <!-- Internal Cross-Bridges -->
+                        <line x1="34" y1="82" x2="154" y2="82" stroke="rgba(255,255,255,0.62)" stroke-dasharray="4 3" />
+                        <line x1="98" y1="34" x2="98" y2="130" stroke="rgba(255,255,255,0.62)" stroke-dasharray="4 3" />
+                        <!-- 3 Converging Routes Into Recall -->
+                        <path d="M98 34 Q 186 24, 236 82" />
+                        <line x1="154" y1="82" x2="236" y2="82" stroke="#d4c7ff" stroke-width="2.1" />
+                        <path d="M98 130 Q 186 140, 236 82" />
+                      </g>
+
+                      <!-- 3 Travelling Luminous Recall Signal Pulses -->
+                      <circle r="4" fill="#ffffff">
+                        <animateMotion dur="3.1s" repeatCount="indefinite" path="M98 34 L154 82 L236 82" />
+                      </circle>
+                      <circle r="4" fill="#d4c7ff">
+                        <animateMotion dur="3.6s" begin="0.9s" repeatCount="indefinite" path="M34 82 L98 130 Q 186 140, 236 82" />
+                      </circle>
+                      <circle r="3.6" fill="#a7f3d0">
+                        <animateMotion dur="3.4s" begin="1.8s" repeatCount="indefinite" path="M34 82 L98 34 Q 186 24, 236 82" />
+                      </circle>
+
+                      <!-- 4 Interlinked Concept Nodes -->
+                      <circle cx="98" cy="34" r="21" fill="#ffffff" stroke="#d4c7ff" stroke-width="2.2" />
+                      <text x="98" y="38.5" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11.5" font-weight="700">Why</text>
+
+                      <circle cx="34" cy="82" r="21" fill="#ffffff" stroke="#d4c7ff" stroke-width="2.2" />
+                      <text x="34" y="86.5" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11" font-weight="700">Cause</text>
+
+                      <circle cx="154" cy="82" r="21" fill="#ffffff" stroke="#d4c7ff" stroke-width="2.2" />
+                      <text x="154" y="86.5" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11.5" font-weight="700">Rule</text>
+
+                      <circle cx="98" cy="130" r="21" fill="#ffffff" stroke="#d4c7ff" stroke-width="2.2" />
+                      <text x="98" y="134.5" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="11.5" font-weight="700">Link</text>
+
+                      <!-- Glowing Recall Hub Node -->
+                      <circle cx="236" cy="82" r="30" stroke="#d4c7ff" stroke-width="1.4" opacity="0.5" class="calm-halo-ring" />
+                      <circle cx="236" cy="82" r="24" fill="#d4c7ff" stroke="#ffffff" stroke-width="1.8" />
+                      <text x="236" y="86.5" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="12" font-weight="700">Recall</text>
+                    </g>
+                  </svg>
+                </div>
+
+                <div class="m-web-legend">
+                  <span class="m-web-legend-chip">4 Interconnected Paths</span>
+                  <span class="m-web-legend-chip">Zero Single Point of Failure</span>
+                </div>
+
+                <div class="m-mem-result">Result: 4 connected paths reconstruct the answer calmly in own words</div>
+              </div>
+            </div>
           </div>
 
           <!-- 4-Row Comparison Table -->
@@ -1517,7 +1731,7 @@
               <span class="loop-toolbar-title">INTERACTIVE 4-STEP COGNITIVE LOOP (CLICK ANY NODE TO INSPECT)</span>
               <span class="loop-toolbar-meta">Continuous Self-Correcting Feedback Cycle</span>
             </div>
-            <div class="svg-scroll-viewport">
+            <div class="svg-scroll-viewport desktop-svg-only">
               <svg viewBox="0 0 880 155" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive 4-Step Learning Loop: Step 01 Observe, Step 02 Engineer, Step 03 Test, Step 04 Self-Fix">
                 <path d="M190 72 H256" stroke="#714cb6" stroke-width="2.2" class="animated-flow-line" aria-hidden="true" />
                 <path d="M416 72 H482" stroke="#714cb6" stroke-width="2.2" class="animated-flow-line" aria-hidden="true" />
@@ -1573,6 +1787,30 @@
                   <text x="722" y="96" fill="#666666" font-family="Inter, sans-serif" font-size="10.5" aria-hidden="true">Reflect &amp; Adjust Method</text>
                 </g>
               </svg>
+            </div>
+
+            <!-- Mobile-Native Interactive 2x2 Learning Loop Grid (<= 768px — Zero Horizontal Clipping) -->
+            <div class="mobile-loop-grid" role="group" aria-label="Interactive 4-Step Learning Loop">
+              <button type="button" class="m-loop-node active" data-step-target="1" aria-pressed="true">
+                <span class="m-loop-step">STEP 01</span>
+                <strong>OBSERVE</strong>
+                <span class="m-loop-desc">Decode before jumping in</span>
+              </button>
+              <button type="button" class="m-loop-node" data-step-target="2" aria-pressed="false">
+                <span class="m-loop-step">STEP 02</span>
+                <strong>ENGINEER</strong>
+                <span class="m-loop-desc">Structure the approach</span>
+              </button>
+              <button type="button" class="m-loop-node" data-step-target="3" aria-pressed="false">
+                <span class="m-loop-step">STEP 03</span>
+                <strong>TEST</strong>
+                <span class="m-loop-desc">Check actively aloud</span>
+              </button>
+              <button type="button" class="m-loop-node" data-step-target="4" aria-pressed="false">
+                <span class="m-loop-step">STEP 04</span>
+                <strong>SELF-FIX</strong>
+                <span class="m-loop-desc">Reflect &amp; adjust method</span>
+              </button>
             </div>
 
             <!-- Live Viewport Preview Bar -->
@@ -2143,7 +2381,7 @@
 
               <!-- Graphic 8 Right UI Mockup (Re-Themed) -->
               <div class="studio-mockup-ui">
-                <svg viewBox="0 0 420 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Me vs Past Me self-referenced growth portfolio bars paired with 4-Person Squad Badge hexagon">
+                <svg class="portfolio-desktop-svg" viewBox="0 0 420 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Me vs Past Me self-referenced growth portfolio bars paired with 4-Person Squad Badge hexagon">
                   <g aria-hidden="true">
                     <rect width="420" height="150" rx="10" fill="#f2f0eb" stroke="#e3e3e2" />
                     <text x="20" y="28" fill="#292827" font-family="Inter, sans-serif" font-size="11" font-weight="700">ME VS. PAST ME PORTFOLIO</text>
@@ -2170,6 +2408,40 @@
                     <text x="326" y="141" text-anchor="middle" fill="#292827" font-family="Inter, sans-serif" font-size="9.5" font-weight="600">4-PERSON SQUAD BADGE</text>
                   </g>
                 </svg>
+
+                <!-- Mobile-Native Legible Growth Portfolio & Squad Card (<= 768px) -->
+                <div class="portfolio-mobile-card" aria-label="Me vs Past Me self-referenced growth portfolio and 4-Person Squad Badge">
+                  <div class="pm-bars-block">
+                    <span class="pm-kicker">ME VS. PAST ME PORTFOLIO</span>
+                    <div class="pm-bar-row">
+                      <span class="pm-bar-label">Term 1 Baseline</span>
+                      <div class="pm-bar-track"><span class="pm-bar-fill pm-fill-base"></span></div>
+                    </div>
+                    <div class="pm-bar-row">
+                      <span class="pm-bar-label is-milestone">Current Milestone (+42%)</span>
+                      <div class="pm-bar-track is-lilac"><span class="pm-bar-fill pm-fill-now"></span></div>
+                    </div>
+                    <span class="pm-safe-pill">Zero Public Rank Shaming</span>
+                  </div>
+
+                  <div class="pm-squad-block">
+                    <svg width="88" height="88" viewBox="268 14 116 116" fill="none" aria-hidden="true">
+                      <polygon points="326,20 374,46 374,98 326,124 278,98 278,46" fill="#f1ecff" stroke="#714cb6" stroke-width="2.2" />
+                      <line x1="308" y1="56" x2="344" y2="56" stroke="#0c4243" stroke-width="2" />
+                      <line x1="308" y1="88" x2="344" y2="88" stroke="#0c4243" stroke-width="2" />
+                      <line x1="308" y1="56" x2="308" y2="88" stroke="#0c4243" stroke-width="2" />
+                      <line x1="344" y1="56" x2="344" y2="88" stroke="#0c4243" stroke-width="2" />
+                      <circle cx="308" cy="56" r="8.5" fill="#421d24" />
+                      <circle cx="344" cy="56" r="8.5" fill="#0c4243" />
+                      <circle cx="308" cy="88" r="8.5" fill="#714cb6" />
+                      <circle cx="344" cy="88" r="8.5" fill="#292827" />
+                    </svg>
+                    <div class="pm-squad-copy">
+                      <strong>4-Person Squad Badge</strong>
+                      <span>Balanced team recognition where every voice contributes</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2909,12 +3181,13 @@
             </div>
 
             <div class="exclusivity-callout">
-              <strong>Note on District Exclusivity:</strong> To ensure dedicated on-site support and protect our partner schools' distinctive positioning, HALOGIQ limits full-campus <strong>HALOGIQ Elevate</strong> partnerships to selected institutions within each educational district.
+              <strong>Phase-1 Founding Partner Policy:</strong> To keep weekly mentorship personal and unhurried, HALOGIQ onboards <strong>one Founding Partner School per Educational District</strong> following a Campus Readiness Audit.
+              <a href="#partner" class="exclusivity-anchor-link" data-nav="partner" data-scroll-to="sec-partner-charter">Read eligibility &amp; 14-day priority terms &darr;</a>
             </div>
           </div>
 
           <!-- Section 5.2: Right Column Request a Curriculum Walkthrough via WhatsApp -->
-          <div class="partner-form-card">
+          <div class="partner-form-card" id="partnerFormCard">
             <h2 class="form-card-title">Request a Curriculum Walkthrough on WhatsApp</h2>
             <p class="form-card-subtitle">
               Connect directly with our academic partnerships team on WhatsApp to request our institutional blueprint, campus visit, or 12-minute classroom preview.
@@ -2926,15 +3199,23 @@
                 <div class="radio-group" role="radiogroup" aria-labelledby="pathwayGroupLabel">
                   <label class="radio-option">
                     <input type="radio" name="pathway" value="HALOGIQ Elevate [Full Campus + Studio]" checked />
-                    <span>HALOGIQ Elevate [Full Campus + Studio]</span>
+                    <span class="radio-option-copy">
+                      <span class="radio-option-title">HALOGIQ Elevate</span>
+                      <span class="radio-option-meta">Full Campus + Studio</span>
+                    </span>
                   </label>
                   <label class="radio-option">
                     <input type="radio" name="pathway" value="HALOGIQ Exams [Grades 10 to 12]" />
-                    <span>HALOGIQ Exams [Grades 10 to 12]</span>
+                    <span class="radio-option-copy">
+                      <span class="radio-option-title">HALOGIQ Exams</span>
+                      <span class="radio-option-meta">Grades 10 to 12</span>
+                    </span>
                   </label>
                   <label class="radio-option">
                     <input type="radio" name="pathway" value="Both / Need Guidance" />
-                    <span>Both / Need Guidance</span>
+                    <span class="radio-option-copy">
+                      <span class="radio-option-title">Both / Need Guidance</span>
+                    </span>
                   </label>
                 </div>
               </div>
@@ -2962,6 +3243,76 @@
                 <a href="tel:+919481369078">Call: +91 94813 69078</a>
                 <a href="mailto:partnership@halogiq.com?subject=HALOGIQ%20Curriculum%20Walkthrough%20Request">Email: partnership@halogiq.com</a>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5.3: Founding Partner Charter — Eligibility, Readiness Audit & District Exclusivity -->
+      <section class="section surface-parchment-light" id="sec-partner-charter" aria-labelledby="partnerCharterHeading">
+        <div class="container">
+          <div class="charter-blueprint-card">
+            <div class="charter-header">
+              <div class="charter-header-meta">
+                <span class="charter-live-dot" aria-hidden="true"></span>
+                <span class="charter-eyebrow">FOUNDING PARTNER STANDARDS</span>
+              </div>
+              <h2 id="partnerCharterHeading">Campus Eligibility, Readiness Audit <span class="charter-heading-muted">&amp; District Exclusivity</span></h2>
+              <p class="charter-lead">
+                Real change in how students learn and speak takes weekly on-site presence, not a one-time slide deck. To keep our mentorship deeply personal and protect the standard our partner campuses are known for, we work under two clear commitments:
+              </p>
+            </div>
+
+            <div class="charter-criteria-grid">
+              <!-- Criterion 01: Readiness Audit -->
+              <div class="charter-criterion-card criterion-audit">
+                <div class="charter-criterion-top">
+                  <span class="charter-badge badge-audit">CRITERION 01 &middot; READINESS AUDIT</span>
+                  <span class="charter-tag">Selective Onboarding</span>
+                </div>
+                <h3>The Prerequisite Campus Readiness Audit</h3>
+                <p>
+                  We do not partner with every school that enquires. Before confirming a campus, our academic leadership conducts a short <strong>Campus Readiness &amp; Adaptability Audit</strong> with your management and faculty. This ensures your school's daily culture is genuinely ready to nurture calm thinking, curiosity, and lasting student growth alongside HALOGIQ.
+                </p>
+              </div>
+
+              <!-- Criterion 02: District Exclusivity & 14-Day Priority Window -->
+              <div class="charter-criterion-card criterion-district">
+                <div class="charter-criterion-top">
+                  <span class="charter-badge badge-district">CRITERION 02 &middot; DISTRICT SLOT</span>
+                  <span class="charter-tag">1 School Per District</span>
+                </div>
+                <h3>Phase-1 District Exclusivity &amp; 14-Day Priority Window</h3>
+                <p>
+                  So our THC-Institute R&amp;D team and on-site facilitators can pour full depth into every classroom and studio, we onboard only <strong>one Founding Partner School per Educational District</strong> in Phase 1. After receiving your campus dossier and completing the readiness audit, your school holds a <strong>14-day priority window</strong> to confirm your district partnership before the zone opens to the next shortlisted campus.
+                </p>
+              </div>
+            </div>
+
+            <div class="charter-checkpoints" aria-label="Founding Partner Governance Summary">
+              <div class="charter-checkpoint">
+                <span class="charter-cp-val">1 School / District</span>
+                <span class="charter-cp-lbl">Phase-1 Founding Partner Cap</span>
+              </div>
+              <div class="charter-checkpoint">
+                <span class="charter-cp-val">Readiness Audit</span>
+                <span class="charter-cp-lbl">Faculty &amp; Culture Alignment Check</span>
+              </div>
+              <div class="charter-checkpoint">
+                <span class="charter-cp-val">14-Day Window</span>
+                <span class="charter-cp-lbl">Priority District Hold After Audit</span>
+              </div>
+            </div>
+
+            <div class="charter-action-bar">
+              <a href="https://opnform.com/forms/halogiq-school-application-form-kahph5" target="_blank" rel="noopener noreferrer" class="btn btn-lilac-solid charter-apply-btn">
+                <span>Apply for Phase-1 District Eligibility</span>
+                <svg class="arrow-nudge" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#partner" class="violet-link on-dark" data-nav="partner" data-scroll-to="partnerFormCard">
+                <span>Or connect directly on WhatsApp</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
             </div>
           </div>
         </div>
@@ -3049,6 +3400,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>

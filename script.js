@@ -41,6 +41,242 @@ document.addEventListener('DOMContentLoaded', () => {
   updateHeaderScrollState();
 
   // ==========================================================================
+  // 1.5. DUAL ROTATING ANNOUNCEMENT BANNER & QUARTERLY COUNTDOWN (JAN–DEC)
+  // ==========================================================================
+  (function initAnnouncementBanner() {
+    const banner = document.getElementById('announcementBanner');
+    if (!banner) return;
+
+    const slides = Array.from(banner.querySelectorAll('.announcement-slide'));
+    const pips = Array.from(banner.querySelectorAll('.announcement-pip'));
+    const elDays = document.getElementById('anncDays');
+    const elHours = document.getElementById('anncHours');
+    const elMinutes = document.getElementById('anncMinutes');
+    const elSeconds = document.getElementById('anncSeconds');
+    const elDeadlineFull = document.getElementById('anncDeadlineFull');
+    const elDeadlineShort = document.getElementById('anncDeadlineShort');
+    const elMobileCta = document.getElementById('anncMobileCta');
+
+    // Standard Jan–Dec calendar quarter closing dates (automatic perpetual rollover)
+    const QUARTERS = [
+      { endMonth: 2, endDay: 31, full: 'March 31', short: 'MAR 31', quarter: 'Q1' },
+      { endMonth: 5, endDay: 30, full: 'June 30', short: 'JUN 30', quarter: 'Q2' },
+      { endMonth: 8, endDay: 30, full: 'September 30', short: 'SEP 30', quarter: 'Q3' },
+      { endMonth: 11, endDay: 31, full: 'December 31', short: 'DEC 31', quarter: 'Q4' }
+    ];
+
+    function getQuarterlyDeadline(now) {
+      const year = now.getFullYear();
+      const qIndex = Math.floor(now.getMonth() / 3);
+      const q = QUARTERS[qIndex];
+      const target = new Date(year, q.endMonth, q.endDay, 23, 59, 59, 999);
+
+      if (now.getTime() > target.getTime()) {
+        const nextIndex = (qIndex + 1) % 4;
+        const nextYear = nextIndex === 0 ? year + 1 : year;
+        const nextQ = QUARTERS[nextIndex];
+        return {
+          target: new Date(nextYear, nextQ.endMonth, nextQ.endDay, 23, 59, 59, 999),
+          full: nextQ.full,
+          short: nextQ.short,
+          quarter: nextQ.quarter
+        };
+      }
+
+      return { target, full: q.full, short: q.short, quarter: q.quarter };
+    }
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function updateCountdown(referenceDate = new Date()) {
+      const { target, full, short } = getQuarterlyDeadline(referenceDate);
+      const diffMs = Math.max(0, target.getTime() - referenceDate.getTime());
+      const totalSeconds = Math.floor(diffMs / 1000);
+
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (elDays) elDays.textContent = pad2(days);
+      if (elHours) elHours.textContent = pad2(hours);
+      if (elMinutes) elMinutes.textContent = pad2(minutes);
+      if (elSeconds) elSeconds.textContent = pad2(seconds);
+
+      if (elDeadlineFull && elDeadlineFull.textContent !== full) {
+        elDeadlineFull.textContent = full;
+      }
+      if (elDeadlineShort && elDeadlineShort.textContent !== short) {
+        elDeadlineShort.textContent = short;
+      }
+      if (elMobileCta) {
+        const ariaText = `Apply by ${full}`;
+        if (elMobileCta.getAttribute('aria-label') !== ariaText) {
+          elMobileCta.setAttribute('aria-label', ariaText);
+        }
+      }
+    }
+
+    // Hydrate before first swipe so digits never flash 00
+    updateCountdown();
+    let countdownInterval = window.setInterval(updateCountdown, 1000);
+
+    if (slides.length < 2) return;
+
+    const DWELL_MS = prefersReducedMotion ? [7000, 7000] : [4500, 6500];
+    let currentIndex = 0;
+    let isPaused = false;
+    let rotateTimer = null;
+    let transitionSeq = 0;
+
+    function syncSlideA11y(activeIdx) {
+      slides.forEach((slide, idx) => {
+        const active = idx === activeIdx;
+        slide.setAttribute('aria-hidden', String(!active));
+        slide.querySelectorAll('a, button').forEach((el) => {
+          if (active) {
+            el.removeAttribute('tabindex');
+          } else {
+            el.setAttribute('tabindex', '-1');
+          }
+        });
+      });
+
+      pips.forEach((pip, idx) => {
+        const active = idx === activeIdx;
+        pip.classList.toggle('is-active', active);
+        pip.setAttribute('aria-selected', String(active));
+      });
+
+      banner.setAttribute('data-active-slide', String(activeIdx));
+    }
+
+    function scheduleNext() {
+      if (rotateTimer) {
+        window.clearTimeout(rotateTimer);
+        rotateTimer = null;
+      }
+      if (isPaused || document.hidden) return;
+
+      rotateTimer = window.setTimeout(() => {
+        goToSlide((currentIndex + 1) % slides.length);
+      }, DWELL_MS[currentIndex] || 5000);
+    }
+
+    function goToSlide(nextIndex) {
+      if (nextIndex === currentIndex || nextIndex < 0 || nextIndex >= slides.length) return;
+
+      const outgoing = slides[currentIndex];
+      const incoming = slides[nextIndex];
+      const seq = ++transitionSeq;
+
+      slides.forEach((s) => {
+        if (s !== outgoing && s !== incoming) {
+          s.classList.remove('is-active', 'is-exiting');
+          s.classList.add('is-waiting');
+        }
+      });
+
+      if (prefersReducedMotion) {
+        outgoing.classList.remove('is-active', 'is-exiting');
+        outgoing.classList.add('is-waiting');
+        incoming.classList.remove('is-waiting', 'is-exiting');
+        incoming.classList.add('is-active');
+      } else {
+        // Park incoming slide below the fold without transition, then swipe cleanly UP
+        incoming.classList.remove('is-active', 'is-exiting');
+        incoming.classList.add('is-waiting');
+        void incoming.offsetHeight;
+        incoming.classList.remove('is-waiting');
+        void incoming.offsetHeight;
+        incoming.classList.add('is-active');
+
+        // Swipe outgoing slide UP and out
+        outgoing.classList.remove('is-active', 'is-waiting');
+        outgoing.classList.add('is-exiting');
+
+        // Silently reset outgoing slide below the fold for next endless upward cycle
+        window.setTimeout(() => {
+          if (seq !== transitionSeq) return;
+          outgoing.classList.remove('is-exiting');
+          outgoing.classList.add('is-waiting');
+        }, 620);
+      }
+
+      currentIndex = nextIndex;
+      syncSlideA11y(currentIndex);
+      scheduleNext();
+    }
+
+    pips.forEach((pip) => {
+      pip.addEventListener('click', () => {
+        const targetIdx = Number(pip.getAttribute('data-slide-target'));
+        if (!Number.isNaN(targetIdx)) {
+          goToSlide(targetIdx);
+        }
+      });
+    });
+
+    banner.addEventListener('mouseenter', () => {
+      isPaused = true;
+      if (rotateTimer) {
+        window.clearTimeout(rotateTimer);
+        rotateTimer = null;
+      }
+    });
+
+    banner.addEventListener('mouseleave', () => {
+      isPaused = false;
+      scheduleNext();
+    });
+
+    banner.addEventListener('focusin', () => {
+      isPaused = true;
+      if (rotateTimer) {
+        window.clearTimeout(rotateTimer);
+        rotateTimer = null;
+      }
+    });
+
+    banner.addEventListener('focusout', (e) => {
+      if (!banner.contains(e.relatedTarget)) {
+        isPaused = false;
+        scheduleNext();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (countdownInterval) {
+          window.clearInterval(countdownInterval);
+          countdownInterval = null;
+        }
+        if (rotateTimer) {
+          window.clearTimeout(rotateTimer);
+          rotateTimer = null;
+        }
+      } else {
+        updateCountdown();
+        if (!countdownInterval) {
+          countdownInterval = window.setInterval(updateCountdown, 1000);
+        }
+        scheduleNext();
+      }
+    });
+
+    window.__halogiqBanner = {
+      getQuarterlyDeadline,
+      goToSlide,
+      getActiveIndex: () => currentIndex
+    };
+
+    syncSlideA11y(0);
+    scheduleNext();
+  })();
+
+  // ==========================================================================
   // 2. NAVBAR DROPDOWNS & HERO INTERACTIVE LAUNCHER POPOVER
   // ==========================================================================
   const navDropdownItems = document.querySelectorAll('.nav-item[data-dropdown]');
@@ -402,13 +638,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let activeTrustSetIdx = 0;
   let isTrustHovered = false;
+  let isTrustInView = true;
 
   if (trustGrid && trustSlots.length === 6 && !prefersReducedMotion) {
     trustGrid.addEventListener('mouseenter', () => { isTrustHovered = true; });
     trustGrid.addEventListener('mouseleave', () => { isTrustHovered = false; });
 
+    if ('IntersectionObserver' in window) {
+      const trustObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isTrustInView = entry.isIntersecting;
+          });
+        },
+        { threshold: 0.05 }
+      );
+      trustObserver.observe(trustGrid);
+    }
+
+    const homeViewEl = document.getElementById('view-home');
+
     setInterval(() => {
-      if (isTrustHovered || document.hidden) return;
+      const homeActive = !homeViewEl || homeViewEl.classList.contains('active');
+      if (isTrustHovered || !isTrustInView || !homeActive || document.hidden) return;
       activeTrustSetIdx = (activeTrustSetIdx + 1) % TRUST_SETS.length;
       const nextSet = TRUST_SETS[activeTrustSetIdx];
 
@@ -478,10 +730,25 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       },
-      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+      { threshold: 0.02, rootMargin: '0px 0px 80px 0px' }
     );
 
     revealEls.forEach((el) => revealObserver.observe(el));
+
+    // Fast-scroll safety fallback so rapid mobile flicks never leave visible sections hidden
+    let revealRaf = null;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (revealRaf) return;
+        revealRaf = requestAnimationFrame(() => {
+          const activeView = document.querySelector('.page-view.active');
+          if (activeView) triggerVisibleReveals(activeView);
+          revealRaf = null;
+        });
+      },
+      { passive: true }
+    );
   } else {
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
@@ -537,6 +804,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const memoryToggleBtns = document.querySelectorAll('[data-memory-view]');
   const svgStateSurface = document.getElementById('svgStateSurface');
   const svgStateStructured = document.getElementById('svgStateStructured');
+  const mobStateSurface = document.getElementById('mobStateSurface');
+  const mobStateStructured = document.getElementById('mobStateStructured');
   const surfaceTableCells = document.querySelectorAll('#memoryComparisonTable .col-surface');
   const structuredTableCells = document.querySelectorAll('#memoryComparisonTable .col-structured');
 
@@ -550,17 +819,19 @@ document.addEventListener('DOMContentLoaded', () => {
         b.setAttribute('aria-pressed', String(isSelected));
       });
 
+      const surfaceActive = mode !== 'structured';
+      const structuredActive = mode !== 'surface';
+
       if (svgStateSurface && svgStateStructured) {
-        if (mode === 'surface') {
-          svgStateSurface.setAttribute('class', 'svg-state-active');
-          svgStateStructured.setAttribute('class', 'svg-state-dimmed');
-        } else if (mode === 'structured') {
-          svgStateSurface.setAttribute('class', 'svg-state-dimmed');
-          svgStateStructured.setAttribute('class', 'svg-state-active');
-        } else {
-          svgStateSurface.setAttribute('class', 'svg-state-active');
-          svgStateStructured.setAttribute('class', 'svg-state-active');
-        }
+        svgStateSurface.setAttribute('class', surfaceActive ? 'svg-state-active' : 'svg-state-dimmed');
+        svgStateStructured.setAttribute('class', structuredActive ? 'svg-state-active' : 'svg-state-dimmed');
+      }
+
+      if (mobStateSurface && mobStateStructured) {
+        mobStateSurface.classList.toggle('svg-state-active', surfaceActive);
+        mobStateSurface.classList.toggle('svg-state-dimmed', !surfaceActive);
+        mobStateStructured.classList.toggle('svg-state-active', structuredActive);
+        mobStateStructured.classList.toggle('svg-state-dimmed', !structuredActive);
       }
 
       surfaceTableCells.forEach((cell) => {
@@ -579,6 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 9. PAGE 2, SECTION 2.3: GRAPHIC 6 INTERACTIVE 4-STEP LOOP
   // ==========================================================================
   const loopNodes = document.querySelectorAll('.loop-node-group');
+  const mobileLoopNodes = document.querySelectorAll('.m-loop-node');
   const loopCards = document.querySelectorAll('.loop-step-card');
   const loopLivePreview = document.getElementById('loopLivePreview');
 
@@ -608,6 +880,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const isMatch = card.getAttribute('data-step-card') === key;
       card.classList.toggle('active', isMatch);
       card.setAttribute('aria-pressed', String(isMatch));
+    });
+
+    mobileLoopNodes.forEach((btn) => {
+      const isMatch = btn.getAttribute('data-step-target') === key;
+      btn.classList.toggle('active', isMatch);
+      btn.setAttribute('aria-pressed', String(isMatch));
     });
 
     loopNodes.forEach((node) => {
@@ -642,6 +920,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         highlightLoopStep(node.getAttribute('data-step-target'));
       }
+    });
+  });
+
+  mobileLoopNodes.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      highlightLoopStep(btn.getAttribute('data-step-target'));
     });
   });
 
