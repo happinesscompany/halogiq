@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateHeaderScrollState() {
     if (!siteHeader) return;
-    siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+    siteHeader.classList.toggle('is-scrolled', window.scrollY > 40);
   }
 
   window.addEventListener('scroll', updateHeaderScrollState, { passive: true });
@@ -1256,18 +1256,16 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCampusConfigurator();
 
   // ==========================================================================
-  // 15. PAGE 4, SECTION 4.2: INTERACTIVE 3-TIER ARCHITECTURE & 12-PILLAR INSPECTOR
+  // 15. PAGE 4, SECTION 4.2: STREAMLINED 3-TIER ARCHITECTURE BLUEPRINT
   // ==========================================================================
   const tierWidget = document.getElementById('tierArchitectureWidget');
   const tierCards = document.querySelectorAll('.arch-tier-card[data-arch-tier]');
-  const tierTriggers = document.querySelectorAll('[data-select-tier]');
-  const subChips = document.querySelectorAll('[data-select-sub]');
-  const tierTableRows = document.querySelectorAll('#tierSummaryTable tr[data-tier-row]');
+  const tierTriggers = document.querySelectorAll('.arch-tier-trigger[data-select-tier]');
   const archInspectorPanel = document.getElementById('archInspectorPanel');
   const archInspectorKicker = document.getElementById('archInspectorKicker');
   const archInspectorTag = document.getElementById('archInspectorTag');
-  const archBackToTier = document.getElementById('archBackToTier');
-  const archBackToTierLabel = document.getElementById('archBackToTierLabel');
+  const archSubBarLabel = document.getElementById('archSubBarLabel');
+  const archSubPills = document.getElementById('archSubPills');
   const archInspectorTitle = document.getElementById('archInspectorTitle');
   const archInspectorSummary = document.getElementById('archInspectorSummary');
   const archInspectorListLabel = document.getElementById('archInspectorListLabel');
@@ -1275,6 +1273,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const archInspectorMetrics = document.getElementById('archInspectorMetrics');
 
   let activeArchTier = '1';
+
+  const ARCH_TIER_PILLS = {
+    '1': {
+      barLabel: 'Inside Tier 01:',
+      items: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'neuroscientist', label: 'Cognitive Neuroscientist' },
+        { key: 'developmental', label: 'Developmental Psychologist' },
+        { key: 'educational', label: 'Educational Psychologist' },
+        { key: 'psychometrician', label: 'Psychometrician' },
+        { key: 'game-architect', label: 'Experiential Game Architect' },
+        { key: 'behavioral', label: 'Behavioral Scientist' }
+      ]
+    },
+    '2': {
+      barLabel: 'Inside Tier 02:',
+      items: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'monthly-workshops', label: 'Monthly Workshops' },
+        { key: 'educator-credentials', label: 'Educator Credentials' },
+        { key: 'zero-grading', label: 'Zero Extra Grading' }
+      ]
+    },
+    '3': {
+      barLabel: 'Inside Tier 03:',
+      items: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'weekly-labs', label: 'Weekly 45-Min Labs' },
+        { key: 'executive-studio', label: 'Executive Studio' },
+        { key: 'halogiq-exams', label: 'HALOGIQ Exams' }
+      ]
+    }
+  };
 
   const ARCH_TIER_DATA = {
     '1': {
@@ -1284,7 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       summary: 'Six full-time researchers at the THC-Institute build and stress-test every classroom module and exam-calm routine before it reaches your students.',
       listLabel: 'HOW THIS SUPPORTS YOUR CAMPUS',
       items: [
-        { k: 'Age-Calibrated Modules:', v: 'Curriculum tailored for developmental readiness across ages 8 to 21.' },
+        { k: 'Age-Calibrated Modules:', v: 'Curriculum tailored for developmental readiness across ages 8 to 19.' },
         { k: 'Exam-Calm Protocols:', v: 'Applied neuroscience strategies built to stop blank-outs under pressure.' },
         { k: 'Me vs. Past Me Rubrics:', v: 'Self-referenced skill tracking with zero public rank shaming.' }
       ],
@@ -1455,7 +1486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     developmental: {
       parentTier: '1',
       kicker: 'R&D SPECIALIST 02 / 06 · TIER 01',
-      tag: 'Ages 8 to 21',
+      tag: 'Ages 8 to 19',
       title: 'Developmental Psychologist',
       summary: 'Tunes every activity, squad prompt, and stage milestone to match how reasoning and self-assurance mature from Grade 3 to College.',
       listLabel: 'DIRECT CAMPUS CONTRIBUTION',
@@ -1466,7 +1497,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       metrics: [
         { val: '3 Stages', lbl: 'Age-Matched Tracks' },
-        { val: 'Ages 8–21', lbl: 'Continuous Pathway' }
+        { val: 'Ages 8–19', lbl: 'Continuous Pathway' }
       ]
     },
     educational: {
@@ -1552,29 +1583,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tierTriggers.forEach((btn) => {
       const match = btn.getAttribute('data-select-tier') === activeArchTier;
-      btn.setAttribute('aria-pressed', String(match));
-      if (btn.classList.contains('arch-step-pill')) {
-        btn.classList.toggle('active', match);
-      }
+      btn.setAttribute('aria-selected', String(match));
     });
 
-    tierTableRows.forEach((row) => {
-      row.classList.toggle('is-highlighted', row.getAttribute('data-tier-row') === activeArchTier);
-    });
+    if (archInspectorPanel) {
+      archInspectorPanel.setAttribute('aria-labelledby', `arch-tab-${activeArchTier}`);
+    }
   }
 
-  function renderArchInspector(payload, backTierKey = null) {
+  function renderTierPills(tierKey, selectedPillKey = 'overview') {
+    const config = ARCH_TIER_PILLS[String(tierKey)];
+    if (!config || !archSubPills) return;
+
+    if (archSubBarLabel) {
+      archSubBarLabel.textContent = config.barLabel;
+    }
+
+    archSubPills.innerHTML = config.items
+      .map((pill) => {
+        const isSelected = pill.key === selectedPillKey;
+        return `<button type="button" class="arch-pill-btn${isSelected ? ' is-selected' : ''}" data-pill-key="${pill.key}" aria-pressed="${isSelected}">${pill.label}</button>`;
+      })
+      .join('');
+  }
+
+  function renderArchInspector(payload) {
     if (!payload) return;
     if (archInspectorKicker) archInspectorKicker.textContent = payload.kicker;
     if (archInspectorTag) archInspectorTag.textContent = payload.tag;
-
-    if (archBackToTier) {
-      archBackToTier.hidden = !backTierKey;
-      if (backTierKey && archBackToTierLabel) {
-        archBackToTierLabel.textContent = `Back to Tier 0${backTierKey} Overview`;
-      }
-    }
-
     if (archInspectorTitle) archInspectorTitle.textContent = payload.title;
     if (archInspectorSummary) archInspectorSummary.textContent = payload.summary;
     if (archInspectorListLabel) archInspectorListLabel.textContent = payload.listLabel;
@@ -1587,9 +1623,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (archInspectorMetrics) {
       archInspectorMetrics.innerHTML = payload.metrics
-        .map((m) => `<div class="arch-metric-tile"><span class="arch-metric-val">${m.val}</span><span class="arch-metric-lbl">${m.lbl}</span></div>`)
+        .map((m) => `<div class="arch-metric-item"><span class="arch-metric-val">${m.val}</span><span class="arch-metric-lbl">${m.lbl}</span></div>`)
         .join('');
     }
+  }
+
+  function syncSelectedPillInPlace(selectedPillKey) {
+    if (!archSubPills) return;
+    archSubPills.querySelectorAll('.arch-pill-btn[data-pill-key]').forEach((btn) => {
+      const isSelected = btn.getAttribute('data-pill-key') === selectedPillKey;
+      btn.classList.toggle('is-selected', isSelected);
+      btn.setAttribute('aria-pressed', String(isSelected));
+    });
   }
 
   function selectArchTier(tierKey) {
@@ -1597,35 +1642,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = ARCH_TIER_DATA[key];
     if (!data) return;
 
+    const isSameTier = activeArchTier === key && archSubPills && archSubPills.children.length > 0;
     syncTierShellState(key);
-
-    subChips.forEach((chip) => {
-      chip.classList.remove('is-selected');
-      chip.setAttribute('aria-pressed', 'false');
-    });
-
-    renderArchInspector(data, null);
+    if (isSameTier) {
+      syncSelectedPillInPlace('overview');
+    } else {
+      renderTierPills(key, 'overview');
+    }
+    renderArchInspector(data);
   }
 
-  function selectArchSubModule(subKey) {
-    const data = ARCH_SUB_DATA[subKey];
+  function selectArchPill(pillKey) {
+    if (pillKey === 'overview') {
+      const data = ARCH_TIER_DATA[activeArchTier];
+      if (!data) return;
+      syncSelectedPillInPlace('overview');
+      renderArchInspector(data);
+      return;
+    }
+
+    const data = ARCH_SUB_DATA[pillKey];
     if (!data) return;
 
+    const isSameTier = activeArchTier === data.parentTier;
     syncTierShellState(data.parentTier);
-
-    subChips.forEach((chip) => {
-      const match = chip.getAttribute('data-select-sub') === subKey;
-      chip.classList.toggle('is-selected', match);
-      chip.setAttribute('aria-pressed', String(match));
-    });
-
-    renderArchInspector(data, data.parentTier);
+    if (isSameTier) {
+      syncSelectedPillInPlace(pillKey);
+    } else {
+      renderTierPills(data.parentTier, pillKey);
+    }
+    renderArchInspector(data);
   }
 
   function revealArchInspectorOnMobile() {
     if (!archInspectorPanel || window.innerWidth > 1024) return;
     const rect = archInspectorPanel.getBoundingClientRect();
-    const isVisible = rect.top >= 60 && rect.top <= window.innerHeight - 180;
+    const isVisible = rect.top >= 60 && rect.top <= window.innerHeight - 160;
     if (!isVisible) {
       archInspectorPanel.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
@@ -1637,37 +1689,17 @@ document.addEventListener('DOMContentLoaded', () => {
   tierTriggers.forEach((btn) => {
     btn.addEventListener('click', () => {
       selectArchTier(btn.getAttribute('data-select-tier'));
-      if (!btn.classList.contains('arch-step-pill')) {
-        revealArchInspectorOnMobile();
-      }
-    });
-  });
-
-  subChips.forEach((chip) => {
-    chip.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectArchSubModule(chip.getAttribute('data-select-sub'));
       revealArchInspectorOnMobile();
     });
   });
 
-  if (archBackToTier) {
-    archBackToTier.addEventListener('click', () => {
-      selectArchTier(activeArchTier);
+  if (archSubPills) {
+    archSubPills.addEventListener('click', (e) => {
+      const pillBtn = e.target.closest('.arch-pill-btn[data-pill-key]');
+      if (!pillBtn) return;
+      selectArchPill(pillBtn.getAttribute('data-pill-key'));
     });
   }
-
-  tierTableRows.forEach((row) => {
-    row.addEventListener('click', () => {
-      selectArchTier(row.getAttribute('data-tier-row'));
-    });
-    row.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        selectArchTier(row.getAttribute('data-tier-row'));
-      }
-    });
-  });
 
   // Initialize initial view from URL hash (scroll only if deep-linked via hash)
   const rawInitialHash = window.location.hash.replace(/^#/, '').trim();
