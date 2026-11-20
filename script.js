@@ -392,22 +392,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return { route: 'home', sectionId: null };
   }
 
-  function activateRoute(routeKey, options = {}) {
-    const {
-      scrollToTop = true,
-      focusHeading = false,
-      sectionId = null
-    } = options;
-
-    const targetRoute = VALID_ROUTES.includes(routeKey) ? routeKey : 'home';
-    let activeViewEl = null;
-
+  function setActiveNavState(targetRoute) {
     views.forEach((view) => {
       const isMatch = view.getAttribute('data-route') === targetRoute;
       view.classList.toggle('active', isMatch);
-      if (isMatch) {
-        activeViewEl = view;
-      }
     });
 
     desktopNavLinks.forEach((link) => {
@@ -444,7 +432,19 @@ document.addEventListener('DOMContentLoaded', () => {
         headerWalkthroughCta.removeAttribute('aria-current');
       }
     }
+  }
 
+  function activateRoute(routeKey, options = {}) {
+    const {
+      scrollToTop = true,
+      focusHeading = false,
+      sectionId = null
+    } = options;
+
+    const targetRoute = VALID_ROUTES.includes(routeKey) ? routeKey : 'home';
+    const activeViewEl = document.getElementById(targetRoute) || document.querySelector(`.page-view[data-route="${targetRoute}"]`);
+
+    setActiveNavState(targetRoute);
     closeMobileDrawer();
     closeAllDropdowns();
     closeHeroLauncher();
@@ -453,10 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
       routeAnnouncer.textContent = `Navigated to ${ROUTE_TITLES[targetRoute]}`;
     }
 
-    // Ensure revealed sections inside newly active view render crisply
-    if (activeViewEl) {
-      triggerVisibleReveals(activeViewEl);
-    }
+    // Ensure revealed sections across the single-page DOM render crisply
+    triggerVisibleReveals(document);
 
     const targetScrollId = sectionId || pendingScrollSectionId;
     pendingScrollSectionId = null;
@@ -465,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetSection = document.getElementById(targetScrollId);
       if (targetSection) {
         requestAnimationFrame(() => {
-          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          targetSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
           if (focusHeading) {
             targetSection.setAttribute('tabindex', '-1');
             targetSection.focus({ preventScroll: true });
@@ -476,11 +474,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (scrollToTop) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (targetRoute === 'home') {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      } else if (activeViewEl) {
+        activeViewEl.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      }
     }
 
     if (focusHeading && activeViewEl) {
-      const mainHeading = activeViewEl.querySelector('h1');
+      const mainHeading = activeViewEl.querySelector('h1, h2.h1, h2');
       if (mainHeading) {
         mainHeading.focus({ preventScroll: true });
       }
@@ -505,34 +507,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWhatsAppWalkthroughLink();
       }
 
-      if (scrollToId) {
-        pendingScrollSectionId = scrollToId;
-      }
-
       if (targetRoute && VALID_ROUTES.includes(targetRoute)) {
-        const isButton = trigger.tagName.toLowerCase() === 'button';
-        const currentParsed = parseHash(window.location.hash);
-
-        if (isButton) {
-          e.preventDefault();
-          const newHash = scrollToId ? `#${targetRoute}:${scrollToId}` : `#${targetRoute}`;
-          if (window.location.hash !== newHash) {
-            window.location.hash = newHash;
-          } else {
-            activateRoute(targetRoute, {
-              scrollToTop: !scrollToId,
-              focusHeading: true,
-              sectionId: scrollToId
-            });
-          }
-        } else if (currentParsed.route === targetRoute) {
-          e.preventDefault();
-          activateRoute(targetRoute, {
-            scrollToTop: !scrollToId,
-            focusHeading: true,
-            sectionId: scrollToId
-          });
+        e.preventDefault();
+        const targetHash = scrollToId ? `#${scrollToId}` : `#${targetRoute}`;
+        if (window.history && typeof window.history.pushState === 'function') {
+          window.history.pushState(null, '', targetHash);
         }
+        activateRoute(targetRoute, {
+          scrollToTop: true,
+          focusHeading: true,
+          sectionId: scrollToId || null
+        });
       }
     });
   });
@@ -540,11 +525,36 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', () => {
     const { route, sectionId } = parseHash(window.location.hash);
     activateRoute(route, {
-      scrollToTop: !sectionId,
+      scrollToTop: true,
       focusHeading: true,
       sectionId
     });
   });
+
+  // ScrollSpy: Keep active navigation synced with visible section during continuous scroll
+  if ('IntersectionObserver' in window && views.length > 0) {
+    const spyObserver = new IntersectionObserver(
+      (entries) => {
+        let bestEntry = null;
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+              bestEntry = entry;
+            }
+          }
+        });
+        if (bestEntry) {
+          const activeRoute = bestEntry.target.getAttribute('data-route');
+          if (activeRoute) {
+            setActiveNavState(activeRoute);
+          }
+        }
+      },
+      { rootMargin: '-28% 0px -55% 0px', threshold: [0, 0.1, 0.25] }
+    );
+
+    views.forEach((view) => spyObserver.observe(view));
+  }
 
   // ==========================================================================
   // 4. MOBILE NAVIGATION DRAWER
@@ -656,11 +666,8 @@ document.addEventListener('DOMContentLoaded', () => {
       trustObserver.observe(trustGrid);
     }
 
-    const homeViewEl = document.getElementById('view-home');
-
     setInterval(() => {
-      const homeActive = !homeViewEl || homeViewEl.classList.contains('active');
-      if (isTrustHovered || !isTrustInView || !homeActive || document.hidden) return;
+      if (isTrustHovered || !isTrustInView || document.hidden) return;
       activeTrustSetIdx = (activeTrustSetIdx + 1) % TRUST_SETS.length;
       const nextSet = TRUST_SETS[activeTrustSetIdx];
 
@@ -742,8 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
       () => {
         if (revealRaf) return;
         revealRaf = requestAnimationFrame(() => {
-          const activeView = document.querySelector('.page-view.active');
-          if (activeView) triggerVisibleReveals(activeView);
+          triggerVisibleReveals(document);
           revealRaf = null;
         });
       },
@@ -1663,10 +1669,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initialize initial view from URL hash
+  // Initialize initial view from URL hash (scroll only if deep-linked via hash)
+  const rawInitialHash = window.location.hash.replace(/^#/, '').trim();
   const initialParsed = parseHash(window.location.hash);
   activateRoute(initialParsed.route, {
-    scrollToTop: false,
+    scrollToTop: Boolean(rawInitialHash && initialParsed.route !== 'home'),
     focusHeading: false,
     sectionId: initialParsed.sectionId
   });
