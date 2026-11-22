@@ -5946,6 +5946,26 @@ input:focus-visible,
   font-weight: var(--font-weight-w460);
 }
 
+.arch-hint-mobile {
+  display: none;
+}
+
+.arch-chevron-ind,
+.arch-mobile-slot {
+  display: none;
+}
+
+@keyframes archAccordionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .arch-stage-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(0, 1.08fr);
@@ -6627,11 +6647,100 @@ input:focus-visible,
   .arch-stage-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .arch-tier-3 {
-    max-width: 94%;
+  .arch-stage-grid {
+    gap: 0;
   }
-  .arch-tier-2 {
-    max-width: 97%;
+  .arch-hint-desktop {
+    display: none;
+  }
+  .arch-hint-mobile {
+    display: inline;
+  }
+  .arch-tier-3,
+  .arch-tier-2,
+  .arch-tier-1 {
+    max-width: 100%;
+  }
+  .arch-tier-card {
+    overflow: clip;
+  }
+  .arch-tier-card:hover {
+    transform: none;
+  }
+  .arch-tier-card.is-active .arch-tier-trigger {
+    border-radius: 14px 14px 0 0;
+  }
+  .arch-radio-ind {
+    display: none;
+  }
+  .arch-chevron-ind {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    flex-shrink: 0;
+    transition: transform 0.26s var(--ease-editorial), background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease, box-shadow 0.24s ease;
+  }
+  .arch-tier-card.is-active .arch-chevron-ind {
+    transform: rotate(180deg);
+  }
+  .arch-tier-3.is-active .arch-chevron-ind {
+    background-color: rgba(240, 171, 252, 0.18);
+    border-color: rgba(240, 171, 252, 0.65);
+    color: #f5d0fe;
+    box-shadow: 0 0 12px rgba(240, 171, 252, 0.35);
+  }
+  .arch-tier-2.is-active .arch-chevron-ind {
+    background-color: rgba(196, 181, 253, 0.2);
+    border-color: rgba(196, 181, 253, 0.68);
+    color: #ddd6fe;
+    box-shadow: 0 0 12px rgba(196, 181, 253, 0.38);
+  }
+  .arch-tier-1.is-active .arch-chevron-ind {
+    background-color: rgba(94, 234, 212, 0.18);
+    border-color: rgba(94, 234, 212, 0.65);
+    color: #99f6e4;
+    box-shadow: 0 0 12px rgba(94, 234, 212, 0.35);
+  }
+  .arch-mobile-slot {
+    display: none;
+  }
+  .arch-mobile-slot.is-open {
+    display: block;
+  }
+  .arch-mobile-slot .arch-inspector-panel {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0 0 14px 14px;
+    min-height: 0;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(11, 7, 22, 0.72) 0%, rgba(16, 10, 30, 0.9) 100%);
+  }
+  .arch-inspector-panel.is-mobile-collapsed {
+    display: none;
+  }
+  .arch-mobile-slot .arch-inspector-head {
+    min-height: 0;
+  }
+  .arch-mobile-slot .arch-sub-bar {
+    order: -1;
+    padding-top: 0;
+    padding-bottom: 14px;
+    border-top: none;
+  }
+  .arch-mobile-slot .arch-inspector-panel[data-pill-mode="overview"] .arch-inspector-top {
+    display: none;
+  }
+  .arch-mobile-slot .arch-inspector-metrics {
+    margin-top: 4px;
+  }
+  .arch-mobile-slot.is-open .arch-inspector-panel.arch-accordion-enter .arch-inspector-inner {
+    animation: archAccordionReveal 0.24s var(--ease-editorial) both;
   }
   .session-catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -7179,7 +7288,10 @@ input:focus-visible,
     padding: 18px;
   }
   .arch-pyramid-stage {
-    padding: 14px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
   }
   .arch-tier-3,
   .arch-tier-2,
@@ -7198,12 +7310,15 @@ input:focus-visible,
     max-width: 94%;
     white-space: nowrap;
   }
-  .arch-inspector-panel {
-    padding: 20px;
-    min-height: 620px;
+  .arch-mobile-slot .arch-inspector-panel {
+    padding: 16px;
+    min-height: 0;
+  }
+  .arch-mobile-slot .arch-inspector-inner {
+    gap: 14px;
   }
   .arch-inspector-head {
-    min-height: 114px;
+    min-height: 0;
   }
   .arch-inspector-title {
     font-size: 19.5px;
@@ -7501,8 +7616,8 @@ input:focus-visible,
   #tierArchitectureWidget.architecture-visual-card.arch-dark-blueprint {
     padding: 14px;
   }
-  .arch-pyramid-stage {
-    padding: 10px;
+  .arch-tier-trigger {
+    padding: 14px;
   }
   .arch-conduit-pill {
     white-space: normal;
@@ -7522,8 +7637,8 @@ input:focus-visible,
     font-size: 11.5px;
     padding: 5px 10px;
   }
-  .arch-inspector-panel {
-    padding: 18px 16px;
+  .arch-mobile-slot .arch-inspector-panel {
+    padding: 16px 14px;
   }
 }
 

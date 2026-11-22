@@ -1259,8 +1259,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // 15. PAGE 4, SECTION 4.2: STREAMLINED 3-TIER ARCHITECTURE BLUEPRINT
   // ==========================================================================
   const tierWidget = document.getElementById('tierArchitectureWidget');
+  const archStageGrid = document.getElementById('archStageGrid');
+  const archPyramidStage = tierWidget ? tierWidget.querySelector('.arch-pyramid-stage') : null;
   const tierCards = document.querySelectorAll('.arch-tier-card[data-arch-tier]');
   const tierTriggers = document.querySelectorAll('.arch-tier-trigger[data-select-tier]');
+  const archMobileSlots = document.querySelectorAll('.arch-mobile-slot[data-arch-slot]');
   const archInspectorPanel = document.getElementById('archInspectorPanel');
   const archInspectorKicker = document.getElementById('archInspectorKicker');
   const archInspectorTag = document.getElementById('archInspectorTag');
@@ -1271,8 +1274,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const archInspectorListLabel = document.getElementById('archInspectorListLabel');
   const archInspectorList = document.getElementById('archInspectorList');
   const archInspectorMetrics = document.getElementById('archInspectorMetrics');
+  const archMobileMql = window.matchMedia('(max-width: 1024px)');
 
   let activeArchTier = '1';
+  let isMobileArchOpen = true;
 
   const ARCH_TIER_PILLS = {
     '1': {
@@ -1570,20 +1575,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  function syncTierShellState(tierKey) {
+  function isMobileArchViewport() {
+    return archMobileMql.matches;
+  }
+
+  function getArchSlot(tierKey) {
+    return tierWidget ? tierWidget.querySelector(`.arch-mobile-slot[data-arch-slot="${tierKey}"]`) : null;
+  }
+
+  function getArchCard(tierKey) {
+    return tierWidget ? tierWidget.querySelector(`.arch-tier-card[data-arch-tier="${tierKey}"]`) : null;
+  }
+
+  function scrollInstantToY(targetY) {
+    const htmlEl = document.documentElement;
+    const prevBehavior = htmlEl.style.scrollBehavior;
+    htmlEl.style.scrollBehavior = 'auto';
+    window.scrollTo(window.scrollX, Math.max(0, targetY));
+    htmlEl.style.scrollBehavior = prevBehavior;
+  }
+
+  function syncArchAccessibilityRoles(isMobile) {
+    if (archPyramidStage) {
+      if (isMobile) {
+        archPyramidStage.removeAttribute('role');
+        archPyramidStage.removeAttribute('aria-orientation');
+      } else {
+        archPyramidStage.setAttribute('role', 'tablist');
+        archPyramidStage.setAttribute('aria-orientation', 'vertical');
+      }
+    }
+
+    tierTriggers.forEach((btn) => {
+      if (isMobile) {
+        btn.removeAttribute('role');
+        btn.removeAttribute('aria-selected');
+      } else {
+        btn.setAttribute('role', 'tab');
+      }
+    });
+
+    if (archInspectorPanel) {
+      archInspectorPanel.setAttribute('role', isMobile ? 'region' : 'tabpanel');
+    }
+  }
+
+  function mountArchInspectorForViewport(animateEnter = false) {
+    if (!archInspectorPanel || !archStageGrid) return;
+    const isMobile = isMobileArchViewport();
+    syncArchAccessibilityRoles(isMobile);
+
+    archMobileSlots.forEach((slot) => slot.classList.remove('is-open'));
+
+    if (isMobile) {
+      if (isMobileArchOpen) {
+        const targetSlot = getArchSlot(activeArchTier);
+        if (targetSlot) {
+          if (archInspectorPanel.parentElement !== targetSlot) {
+            targetSlot.appendChild(archInspectorPanel);
+          }
+          archInspectorPanel.classList.remove('is-mobile-collapsed');
+          targetSlot.classList.add('is-open');
+
+          if (animateEnter && !prefersReducedMotion) {
+            archInspectorPanel.classList.remove('arch-accordion-enter');
+            void archInspectorPanel.offsetWidth;
+            archInspectorPanel.classList.add('arch-accordion-enter');
+          } else {
+            archInspectorPanel.classList.remove('arch-accordion-enter');
+          }
+        }
+      } else {
+        archInspectorPanel.classList.add('is-mobile-collapsed');
+        archInspectorPanel.classList.remove('arch-accordion-enter');
+      }
+    } else {
+      isMobileArchOpen = true;
+      archInspectorPanel.classList.remove('is-mobile-collapsed', 'arch-accordion-enter');
+      if (archInspectorPanel.parentElement !== archStageGrid) {
+        archStageGrid.appendChild(archInspectorPanel);
+      }
+    }
+  }
+
+  function syncTierShellState(tierKey, isOpen = true) {
     activeArchTier = String(tierKey);
+    const isMobile = isMobileArchViewport();
+    const showActive = !isMobile || isOpen;
 
     if (tierWidget) {
       tierWidget.setAttribute('data-active-tier', activeArchTier);
     }
 
     tierCards.forEach((card) => {
-      card.classList.toggle('is-active', card.getAttribute('data-arch-tier') === activeArchTier);
+      const match = showActive && card.getAttribute('data-arch-tier') === activeArchTier;
+      card.classList.toggle('is-active', match);
     });
 
     tierTriggers.forEach((btn) => {
-      const match = btn.getAttribute('data-select-tier') === activeArchTier;
-      btn.setAttribute('aria-selected', String(match));
+      const match = showActive && btn.getAttribute('data-select-tier') === activeArchTier;
+      if (isMobile) {
+        btn.setAttribute('aria-expanded', String(match));
+      } else {
+        btn.setAttribute('aria-selected', String(match));
+        btn.setAttribute('aria-expanded', String(match));
+      }
     });
 
     if (archInspectorPanel) {
@@ -1605,6 +1701,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<button type="button" class="arch-pill-btn${isSelected ? ' is-selected' : ''}" data-pill-key="${pill.key}" aria-pressed="${isSelected}">${pill.label}</button>`;
       })
       .join('');
+
+    if (archInspectorPanel) {
+      archInspectorPanel.setAttribute('data-pill-mode', selectedPillKey === 'overview' ? 'overview' : 'sub');
+    }
   }
 
   function renderArchInspector(payload) {
@@ -1635,21 +1735,27 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.toggle('is-selected', isSelected);
       btn.setAttribute('aria-pressed', String(isSelected));
     });
+    if (archInspectorPanel) {
+      archInspectorPanel.setAttribute('data-pill-mode', selectedPillKey === 'overview' ? 'overview' : 'sub');
+    }
   }
 
-  function selectArchTier(tierKey) {
+  function selectArchTier(tierKey, options = {}) {
+    const { animateMobileEnter = false } = options;
     const key = String(tierKey);
     const data = ARCH_TIER_DATA[key];
     if (!data) return;
 
     const isSameTier = activeArchTier === key && archSubPills && archSubPills.children.length > 0;
-    syncTierShellState(key);
+    isMobileArchOpen = true;
+    syncTierShellState(key, true);
     if (isSameTier) {
       syncSelectedPillInPlace('overview');
     } else {
       renderTierPills(key, 'overview');
     }
     renderArchInspector(data);
+    mountArchInspectorForViewport(animateMobileEnter);
   }
 
   function selectArchPill(pillKey) {
@@ -1665,31 +1771,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!data) return;
 
     const isSameTier = activeArchTier === data.parentTier;
-    syncTierShellState(data.parentTier);
+    isMobileArchOpen = true;
+    syncTierShellState(data.parentTier, true);
     if (isSameTier) {
       syncSelectedPillInPlace(pillKey);
     } else {
       renderTierPills(data.parentTier, pillKey);
     }
     renderArchInspector(data);
+    if (!isSameTier) {
+      mountArchInspectorForViewport(false);
+    }
   }
 
-  function revealArchInspectorOnMobile() {
-    if (!archInspectorPanel || window.innerWidth > 1024) return;
-    const rect = archInspectorPanel.getBoundingClientRect();
-    const isVisible = rect.top >= 60 && rect.top <= window.innerHeight - 160;
-    if (!isVisible) {
-      archInspectorPanel.scrollIntoView({
-        behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        block: 'nearest'
-      });
+  function handleArchTierClick(tierKey) {
+    const key = String(tierKey);
+    const isMobile = isMobileArchViewport();
+
+    if (!isMobile) {
+      selectArchTier(key);
+      return;
+    }
+
+    const clickedCard = getArchCard(key);
+    const prevCardTop = clickedCard ? clickedCard.getBoundingClientRect().top : null;
+    const isClickingOpenTier = isMobileArchOpen && activeArchTier === key;
+
+    if (isClickingOpenTier) {
+      isMobileArchOpen = false;
+      syncTierShellState(key, false);
+      mountArchInspectorForViewport(false);
+      return;
+    }
+
+    selectArchTier(key, { animateMobileEnter: true });
+
+    if (clickedCard && prevCardTop !== null) {
+      const nextCardTop = clickedCard.getBoundingClientRect().top;
+      const shiftDelta = nextCardTop - prevCardTop;
+      if (Math.abs(shiftDelta) > 2) {
+        scrollInstantToY(window.scrollY + shiftDelta);
+      }
+
+      const headerEl = document.getElementById('siteHeader');
+      const headerH = headerEl ? headerEl.getBoundingClientRect().height : 72;
+      const safeTop = headerH + 14;
+      const cardRect = clickedCard.getBoundingClientRect();
+
+      if (cardRect.top < safeTop || cardRect.top > window.innerHeight * 0.34) {
+        const targetY = Math.max(0, window.scrollY + cardRect.top - safeTop);
+        window.requestAnimationFrame(() => {
+          window.scrollTo({
+            top: targetY,
+            left: window.scrollX,
+            behavior: prefersReducedMotion ? 'auto' : 'smooth'
+          });
+        });
+      }
     }
   }
 
   tierTriggers.forEach((btn) => {
     btn.addEventListener('click', () => {
-      selectArchTier(btn.getAttribute('data-select-tier'));
-      revealArchInspectorOnMobile();
+      handleArchTierClick(btn.getAttribute('data-select-tier'));
     });
   });
 
@@ -1700,6 +1844,20 @@ document.addEventListener('DOMContentLoaded', () => {
       selectArchPill(pillBtn.getAttribute('data-pill-key'));
     });
   }
+
+  const handleArchViewportChange = () => {
+    mountArchInspectorForViewport(false);
+    syncTierShellState(activeArchTier, isMobileArchOpen);
+  };
+
+  if (typeof archMobileMql.addEventListener === 'function') {
+    archMobileMql.addEventListener('change', handleArchViewportChange);
+  } else if (typeof archMobileMql.addListener === 'function') {
+    archMobileMql.addListener(handleArchViewportChange);
+  }
+
+  // Mount inspector into the appropriate desktop column or mobile accordion slot on load
+  handleArchViewportChange();
 
   // Initialize initial view from URL hash (scroll only if deep-linked via hash)
   const rawInitialHash = window.location.hash.replace(/^#/, '').trim();
