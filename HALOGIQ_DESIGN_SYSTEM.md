@@ -33,6 +33,7 @@ While rooted in Superhuman's calm editorial restraint, HALOGIQ introduces five d
 | **Light Wordmark (PNG)** | `assets/halogiq-logo-light.png` (`1024×140`) | Midnight Wine footer (`#421d24`), dark `404.html`, OG cards, dark studio decks | 24px (`176×24` footer) |
 | **Brand Wordmark Master (PNG)** | `halogiq-logo.png` (`1024×140`) | Structured data (`EducationalOrganization.logo`), press kit | 24px |
 | **Q-Blade App Icon / Favicon** | Inline SVG (`128×128`, `rx="24"`) | Browser tab favicon, mobile home screen, square avatars | 16px |
+| **BIMI Email Logo (SVG Tiny PS)** | `bimi-logo.svg` (`576×576`, `tiny-ps`) | Email inbox avatar (`default._bimi.halogiq.com`), circle-safe solid `#421d24` ground | 96px (spec) |
 | **Social Preview Card** | `og-image.png` (`1200×630`) | Open Graph (WhatsApp, LinkedIn, Facebook) & Twitter/X `summary_large_image` | `1200×630px` |
 
 ### Wordmark Anatomy & Clear Space Rules
