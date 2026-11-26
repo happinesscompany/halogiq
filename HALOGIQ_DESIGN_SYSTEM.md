@@ -152,22 +152,23 @@ HALOGIQ adopts Superhuman's signature **two-tone headline split**:
 ### Spacing Scale (`4px` Base Unit)
 `4px`, `8px`, `12px`, `16px`, `20px`, `24px`, `28px`, `32px`, `36px`, `40px`, `48px`, `64px`, `80px`, `96px` (`--spacing-4` through `--spacing-96`).
 
-### Layout Grid & Container System
-- **Max Content Width**: `1240px` (`--page-max-width`, centered with horizontal viewport gutters)
-- **Vertical Section Padding**: `88px` desktop (`--section-gap`), tightening cleanly on tablet/mobile (`56px–64px`)
-- **Card Padding**: `24px` standard (`--card-padding`), `32px–40px` for hero/blueprint showcase cards
-- **Sticky Anchor Offsets**: `scroll-margin-top: 96px` on `.page-view` chapters and `100px` on deep-linked sections (`[id^="sec-"]`, `[id^="stream-"]`, `#partnerFormCard`) to clear the `64px` sticky header + announcement banner
+### Layout Grid, Fluid Spacing & Mobile-Native Architecture
+- **Max Content Width**: `1240px` (`--page-max-width`, centered with fluid safe-area gutters `--gutter-inline: clamp(16px, 3.6vw, 32px)`)
+- **Fluid Spacing & Rhythm Tokens**: `--space-section: clamp(48px, 6.2vw, 88px)`, `--space-section-tight: clamp(40px, 5vw, 64px)`, `--space-header-gap: clamp(28px, 3.8vw, 48px)`, `--space-card: clamp(18px, 2.4vw, 28px)`, `--space-card-lg: clamp(20px, 3.2vw, 38px)`, `--grid-gap: clamp(14px, 2vw, 22px)`
+- **Intrinsic Grids & Container Queries**: `.narrative-intro`, `.philosophy-grid`, and `.session-catalog-grid` reflow intrinsically via `auto-fit` / `auto-fill` + `minmax(min(100%, ...), 1fr)`; `.bento-stone-prism` adapts via `@container exam-prism (max-width: 410px)`; sibling card bottom blocks (`.application-box`, `.outcomes-box`, `.pillar-meta-block`) lock to shared horizontal baselines via `margin-top: auto`
+- **Native Mobile Ergonomics**: `viewport-fit=cover` + `env(safe-area-inset-*)`, `100dvh` frosted mobile drawer with backdrop scrim & body scroll-lock, `44×44px` animated menu toggle, `@media (hover: hover) and (pointer: fine)` guarded card lifts, `text-wrap: balance` / `pretty`, horizontal scroll-snap Hero card deck with live dot indicator, horizontal scroll-snap pill rails (`.challenge-selector`, `.rd-specialists-strip`, `.session-filter-pills`, `.diagram-toggle-group`, `.config-slot-row`, `.arch-sub-pills`), compact 2×2 segmented controls & 3-col KPI strips preserved down to `360px`, and a 2-column mobile footer with `>= 44px` tap targets
+- **Sticky Anchor Offsets**: `scroll-margin-top: calc(var(--header-h) + 8px)` on `.page-view` chapters and `calc(var(--header-h) + 16px)` on deep-linked sections (`[id^="sec-"]`, `[id^="stream-"]`, `#partnerFormCard`)
 - **Single-Page Crawl Architecture**: All 5 chapters (`#home`, `#methodology`, `#programmes`, `#schools`, `#partner`) stay visible in static HTML flow (`display: block`) with `IntersectionObserver` ScrollSpy syncing active navigation states
 
 ### Responsive Breakpoints
 | Breakpoint | Target Tier | Key Adaptations |
 |------------|-------------|-----------------|
-| `<= 1180px` | Compact Desktop | Hero floating glass cards scale inward (`332px` studio card) |
-| `<= 1024px` | Tablet | Main nav switches to slide-down drawer; Trust Grid locks `grid-auto-rows: 138px` |
-| `<= 900px` | Narrow Tablet | Dual announcement banner compresses cleanly |
-| `<= 768px` | Mobile (Primary) | Desktop SVGs (`.desktop-svg-only`) swap to legible `.mobile-diagram-stack` native cards; Trust Grid locks `grid-auto-rows: 146px` with `contain: layout style`; asymmetric bento stacks vertically |
-| `<= 640px` | Standard Phone | Footer collapses to responsive columns; charter grid stacks 1-col |
-| `<= 480px` | Small Phone | Tight horizontal gutters, compact pills, full-width CTAs |
+| `<= 1180px` | Compact Desktop | Hero floating glass cards tuck inward (`332px` studio card) |
+| `<= 1024px` | Tablet | Main nav switches to `100dvh` frosted sheet with backdrop; Hero glass cards become a horizontal scroll-snap deck with live dots; Partner card un-sticks; Footer shifts to clean 2-column link grid |
+| `<= 900px` | Narrow Tablet | 3-item grids step cleanly to 1-col (zero 2+1 orphans); 4 Stakeholder tabs shift to compact 2×2 segmented control; announcement pips hide |
+| `<= 768px` | Mobile (Primary) | Desktop SVGs swap to legible native HTML card stacks; Trust Grid locks `grid-auto-rows: 146px`; Challenge pills & 3-Tier sub-pills become horizontal snap rails; comparison table renders as separated tonal cards; footer links expand to `>= 44px` touch targets |
+| `<= 640px` | Standard Phone | R&D specialists, stage filters, memory toggles & timetable slots become horizontal snap pill rails; Charter checkpoints render as 1+2 architectural grid; CTAs go full-width `48px` |
+| `<= 480px` | Small Phone | Compact 2×2 tabs/session segments & 3-col KPI strip stay side-by-side; Hero swipe deck cards size to `85vw` for clean next-card edge peek |
 | `<= 380px` | Compact Mobile (`360px`) | Zero-overflow enforcement (`overflow: clip` on dark panels, announcement mobile CTA condensed) |
 
 ### Border Radius Scale

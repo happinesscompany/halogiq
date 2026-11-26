@@ -2,7 +2,7 @@
 <html lang="en-IN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>HALOGIQ | Applied Neuroscience &amp; Skill Mastery for Schools</title>
   <meta name="description" content="Applied neuroscience &amp; NEP 2020 life skills for Grades 3-12 schools in India. Build board exam calm, recall &amp; unscripted speaking via our Executive Studio." />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -39,7 +39,7 @@
   </noscript>
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='24' fill='%23421d24'/%3E%3Cpath d='M64 20C92 20 108 35 108 60C108 85 92 100 64 100C36 100 20 85 20 60C20 35 36 20 64 20ZM64 36C45 36 36 45 36 60C36 75 45 84 64 84C83 84 92 75 92 60C92 45 83 36 64 36Z' fill='%23d4c7ff' fill-rule='evenodd'/%3E%3Cpath d='M70 59L110 99L98 111L58 71Z' fill='%23ffffff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=20" />
+  <link rel="stylesheet" href="styles.css?v=21" />
 
   <!-- Structured Data: EducationalOrganization, WebSite & Leadership FAQPage -->
   <script type="application/ld+json">
@@ -362,6 +362,9 @@
     </div>
   </header>
 
+  <!-- Mobile Navigation Backdrop Scrim -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
+
   <main id="mainContent" role="main">
 
     <!-- ======================================================================
@@ -459,7 +462,7 @@
         </div>
 
         <!-- 7 Floating Frosted Glass Product UI Cards Composited Over the Editorial Portrait -->
-        <div class="sh-hero-stage" aria-label="HALOGIQ Campus Live Highlights">
+        <div class="sh-hero-stage" id="heroCardDeck" aria-label="HALOGIQ Campus Live Highlights">
 
           <!-- Card 1 (Left-Upper): 4-Step Learning Loop Coach Window -->
           <div class="sh-glass-card sh-card-coach" style="--index: 1">
@@ -560,6 +563,19 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/></svg>
             <span>Zero Timetable Disruption across inside &amp; beyond classroom touchpoints</span>
           </div>
+        </div>
+
+        <!-- Mobile/Tablet Native Swipe Deck Pagination Cue (Hidden on Desktop >1024px) -->
+        <div class="sh-hero-deck-nav" id="heroDeckNav" aria-label="Swipe campus highlights">
+          <div class="sh-deck-dots" role="tablist" aria-label="Hero highlight slides">
+            <button type="button" class="sh-deck-dot is-active" data-deck-index="0" role="tab" aria-selected="true" aria-label="Highlight 1: 4-Step Learning Loop"></button>
+            <button type="button" class="sh-deck-dot" data-deck-index="1" role="tab" aria-selected="false" aria-label="Highlight 2: Teacher Empowerment"></button>
+            <button type="button" class="sh-deck-dot" data-deck-index="2" role="tab" aria-selected="false" aria-label="Highlight 3: In-Campus Executive Studio"></button>
+            <button type="button" class="sh-deck-dot" data-deck-index="3" role="tab" aria-selected="false" aria-label="Highlight 4: THC-Institute R&D"></button>
+            <button type="button" class="sh-deck-dot" data-deck-index="4" role="tab" aria-selected="false" aria-label="Highlight 5: Double-Win Architecture"></button>
+            <button type="button" class="sh-deck-dot" data-deck-index="5" role="tab" aria-selected="false" aria-label="Highlight 6: Zero Timetable Disruption"></button>
+          </div>
+          <span class="sh-deck-hint" aria-hidden="true">Swipe cards &rarr;</span>
         </div>
       </section>
 
@@ -1368,7 +1384,7 @@
                   </div>
                   <div class="indigo-slot slot-active">
                     <span><strong>ON AIR:</strong> Unscripted 3-Point Talk</span>
-                    <span class="waveform-bars" style="height: 14px">
+                    <span class="waveform-bars waveform-bars-sm">
                       <span></span><span></span><span></span><span></span><span></span>
                     </span>
                   </div>
@@ -1425,7 +1441,7 @@
                   </div>
                 </div>
                 <div class="bento-card-copy">
-                  <span class="bento-kicker" style="color: var(--color-royal-violet)">Pillar 03 &middot; Grades 10, 11 &amp; 12</span>
+                  <span class="bento-kicker bento-kicker-violet">Pillar 03 &middot; Grades 10, 11 &amp; 12</span>
                   <h3>HALOGIQ Exams (Board-Exam Readiness)</h3>
                   <p>A focused cognitive performance module available inside HALOGIQ Elevate or as a standalone cohort track for senior board classes.</p>
                   <p>Trains senior students in breaking down unfamiliar exam questions, one-page chapter mapping, time allocation, and 5-second stress resets to lift board averages calmly.</p>
@@ -3374,6 +3390,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=12" defer></script>
+  <script src="script.js?v=13" defer></script>
 </body>
 </html>

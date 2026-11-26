@@ -350,14 +350,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const routeAnnouncer = document.getElementById('routeAnnouncer');
   const mobileMenuToggle = document.getElementById('mobileMenuToggle');
   const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+  const mobileNavBackdrop = document.getElementById('mobileNavBackdrop');
 
   let pendingScrollSectionId = null;
 
-  function closeMobileDrawer() {
-    if (mobileNavDrawer && mobileMenuToggle) {
-      mobileNavDrawer.classList.remove('open');
-      mobileMenuToggle.setAttribute('aria-expanded', 'false');
+  function setMobileDrawerOpen(isOpen) {
+    if (!mobileNavDrawer || !mobileMenuToggle) return;
+    mobileNavDrawer.classList.toggle('open', isOpen);
+    mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+    if (mobileNavBackdrop) {
+      mobileNavBackdrop.classList.toggle('open', isOpen);
     }
+    document.body.classList.toggle('nav-drawer-open', isOpen);
+  }
+
+  function closeMobileDrawer() {
+    setMobileDrawerOpen(false);
   }
 
   function parseHash(rawHashString) {
@@ -557,13 +565,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // 4. MOBILE NAVIGATION DRAWER
+  // 4. MOBILE NAVIGATION DRAWER (FROSTED SHEET + BACKDROP + SCROLL LOCK)
   // ==========================================================================
   if (mobileMenuToggle && mobileNavDrawer) {
     mobileMenuToggle.addEventListener('click', () => {
-      const isOpen = mobileNavDrawer.classList.toggle('open');
-      mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+      const willOpen = !mobileNavDrawer.classList.contains('open');
+      setMobileDrawerOpen(willOpen);
     });
+
+    if (mobileNavBackdrop) {
+      mobileNavBackdrop.addEventListener('click', () => {
+        closeMobileDrawer();
+      });
+    }
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileNavDrawer.classList.contains('open')) {
@@ -571,7 +585,85 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileMenuToggle.focus();
       }
     });
+
+    // Auto-close mobile sheet cleanly if rotated/resized to desktop width
+    const desktopNavMql = window.matchMedia('(min-width: 1025px)');
+    const handleNavResize = (ev) => {
+      if (ev.matches && mobileNavDrawer.classList.contains('open')) {
+        closeMobileDrawer();
+      }
+    };
+    if (typeof desktopNavMql.addEventListener === 'function') {
+      desktopNavMql.addEventListener('change', handleNavResize);
+    } else if (typeof desktopNavMql.addListener === 'function') {
+      desktopNavMql.addListener(handleNavResize);
+    }
   }
+
+  // ==========================================================================
+  // 4b. MOBILE/TABLET HERO GLASS CARD DECK — LIVE SNAP DOT SYNC
+  // ==========================================================================
+  (function initHeroCardDeck() {
+    const deck = document.getElementById('heroCardDeck');
+    const deckNav = document.getElementById('heroDeckNav');
+    if (!deck || !deckNav) return;
+
+    const deckCards = Array.from(deck.querySelectorAll('.sh-glass-card:not(.sh-card-dock)'));
+    const dots = Array.from(deckNav.querySelectorAll('.sh-deck-dot'));
+    const deckMql = window.matchMedia('(max-width: 1024px)');
+    if (deckCards.length === 0 || dots.length === 0) return;
+
+    function setActiveDot(activeIdx) {
+      dots.forEach((dot, idx) => {
+        const isMatch = idx === activeIdx;
+        dot.classList.toggle('is-active', isMatch);
+        dot.setAttribute('aria-selected', String(isMatch));
+      });
+    }
+
+    let scrollRaf = null;
+    function syncActiveDeckDot() {
+      if (!deckMql.matches) return;
+      const deckRect = deck.getBoundingClientRect();
+      const targetLeft = deckRect.left + 20;
+      let closestIdx = 0;
+      let closestDist = Infinity;
+
+      deckCards.forEach((card, idx) => {
+        const dist = Math.abs(card.getBoundingClientRect().left - targetLeft);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIdx = idx;
+        }
+      });
+
+      setActiveDot(closestIdx);
+    }
+
+    deck.addEventListener('scroll', () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        syncActiveDeckDot();
+        scrollRaf = null;
+      });
+    }, { passive: true });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = Number(dot.getAttribute('data-deck-index'));
+        const card = deckCards[idx];
+        if (!card) return;
+        const leftOffset = card.offsetLeft - parseFloat(getComputedStyle(deck).paddingLeft || '16');
+        deck.scrollTo({
+          left: Math.max(0, leftOffset),
+          behavior: prefersReducedMotion ? 'auto' : 'smooth'
+        });
+        setActiveDot(idx);
+      });
+    });
+
+    syncActiveDeckDot();
+  })();
 
   // ==========================================================================
   // 5. DYNAMIC 6-CELL TRUST GRID CROSS-FADE ROTATION (WITH 12 MONOCHROME EMBLEMS)
